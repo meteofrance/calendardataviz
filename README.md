@@ -1,7 +1,7 @@
 # Calendar Data Visualisation
 Terminal interface to visualise calendar data.
 
-![](doc/images/calendar_data_vizualisation.png)
+![](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/calendar_data_vizualisation.png?raw=true)
 
 ## Install
 This package is available on pypi. Install with your prefered package manager.
