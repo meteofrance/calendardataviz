@@ -6,7 +6,7 @@ from typing import Any, override
 
 import TermTk as ttk
 
-from calendardataviz.inspector_abc import InspectorABC
+from calendardataviz.inspector_abc import InspectorABC, RichString
 from calendardataviz.widgets.loading_spinner import LoadingSpinnerWidget
 from calendardataviz.widgets.popup import PopupWindowWidget
 
@@ -19,7 +19,7 @@ def _async_compute_date(
     args: tuple[
         InspectorABC,
         dt.date,
-        Queue,  # [tuple[dt.date, RichString, bool]]
+        "Queue[tuple[dt.date, RichString, bool]]",
     ],
 ) -> None:
     """Compute completion percentage and display color for one date.
@@ -60,7 +60,7 @@ class CalendarWidget(ttk.TTkFrame):
         self,
         inspector: InspectorABC,
         year: str,
-        queue: Queue[tuple[dt.date, ttk.TTkString, bool]],
+        queue: "Queue[tuple[dt.date, ttk.TTkString, bool]]",
         pool: Pool,
         *args: Any,
         **kwargs: Any,
@@ -89,7 +89,7 @@ class CalendarWidget(ttk.TTkFrame):
 
         self.inspector = inspector
         self._year = year
-        self.queue: Queue[tuple[dt.date, ttk.TTkString, bool]] = queue
+        self.queue = queue
         self._pool = pool
         self._start_date = dt.date(int(year), 1, 1)
         self._end_date = dt.date(int(year) + 1, 1, 1) - dt.timedelta(days=1)
