@@ -21,10 +21,8 @@ mfai = [
 
 [project]
 name = "calendardataviz"
-authors = [
-  { name = "Oscar Dewasmes", email = "oscar.dewasmes@meteo.fr" },
-]
-description="Terminal User Interface to visualize dalendar data."
+authors = [{ name = "Oscar Dewasmes", email = "oscar.dewasmes@meteo.fr" }]
+description = "Terminal User Interface to visualize calendar data."
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
@@ -64,11 +62,7 @@ exclude-newer = "15 days"
 target-version = "py310"
 line-length = 88
 builtins = ["_"]
-include = [
-  "calendardataviz/**/*.py",
-  "demos/**/*.py",
-  "tests/**/*.py",
-]
+include = ["calendardataviz/**/*.py", "demos/**/*.py", "tests/**/*.py"]
 exclude = []
 
 [tool.ruff.format]
@@ -92,12 +86,12 @@ ignore = [
   "D213", # Allow multi-line-summary-second-line
   "D415", # Allow missing-terminal-punctuation
 
-  # "D101",  # Allow undocumented-public-class
-  # "D102",  # Allow undocumented-public-method
-  # "D103",  # Allow undocumented-public-function
-  # "D104",  # Allow undocumented-public-package
+  # "D101", # Allow undocumented-public-class
+  # "D102", # Allow undocumented-public-method
+  # "D103", # Allow undocumented-public-function
+  # "D104", # Allow undocumented-public-package
   "D105", # Allow undocumented-magic-method
-  # "D107",  # Allow undocumented-public-init
+  # "D107", # Allow undocumented-public-init
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -124,7 +118,7 @@ exclude_also = ['def __repr__', 'if __name__ == .__main__.:']
 # https://microsoft.github.io/pyright/#/configuration?id=sample-pyprojecttoml-file
 
 ## Run options
-include = ["cams", "scripts", "tests"]
+include = ["calendardataviz", "demos", "tests"]
 ignore = []
 
 verboseOutput = true
@@ -132,7 +126,7 @@ verboseOutput = true
 reportMissingImports = "error"
 reportMissingTypeStubs = false
 
-pythonVersion = "3.11"
+pythonVersion = "3.14"
 pythonPlatform = "Linux"
 
 useLibraryCodeForTypes = true
