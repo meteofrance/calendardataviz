@@ -2,6 +2,7 @@ from calendardataviz import RichString
 import TermTk as ttk
 import pytest
 
+
 def test_RichString() -> None:
     rs = RichString(
         text="test",
@@ -9,9 +10,7 @@ def test_RichString() -> None:
         fg_color="#00ffff",
     )
 
-    assert rs.colorAt(0) == (
-        ttk.TTkColor.fg("#00ffff") + ttk.TTkColor.bg("#ff00ff")
-    )
+    assert rs.colorAt(0) == (ttk.TTkColor.fg("#00ffff") + ttk.TTkColor.bg("#ff00ff"))
     assert str(rs) == "test"
 
     # test that giving a bad color value raises the right exception

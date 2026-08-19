@@ -1,4 +1,3 @@
-
 from pathlib import Path
 
 from calendardataviz.app import _instantiate_widgets
