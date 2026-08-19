@@ -1,19 +1,53 @@
 
 [build-system]
-requires = ["setuptools==83.0.*", "wheel==0.47.*"]
+requires = [
+  "setuptools==83.0.*",
+  "wheel==0.47.*",
+  "setuptools-git-versioning==3.1.0",
+]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.package-dir]
 calendardataviz = "calendardataviz"
 
+[tool.setuptools-git-versioning]
+enabled = true
+
+[tool.setuptools.package-data]
+mfai = [
+  # Include marker file `py.typed` to respect PEP561 and declare this package as type hinted
+  "py.typed",
+]
+
 [project]
 name = "calendardataviz"
-version = "v0.0.0"
+authors = [
+  { name = "Oscar Dewasmes", email = "oscar.dewasmes@meteo.fr" },
+]
+description="Terminal User Interface to visualize dalendar data."
+readme = "README.md"
 requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+dynamic = ["version"]
+license-files = ["LICENSE"]
+keywords = [
+  "TUI",
+  "Terminal User Interface",
+  "Data Visualization",
+  "Artificial Intelligence",
+  "Meteo-France",
+]
 dependencies = ["ffcount>=0.2.3", "pytermtk>=0.50.0a0"]
 
 [project.optional-dependencies]
 dev = ["ruff>=0.16.1", "pyright[nodejs]>=1.1.411", "pytest==9.1.1"]
+
+[project.urls]
+Homepage = "https://github.com/meteofrance/calendardataviz"
 
 [tool.setuptools.packages.find]
 exclude = ["tests*", "doc*"]
