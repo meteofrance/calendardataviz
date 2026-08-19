@@ -1,8 +1,9 @@
+from multiprocessing import Manager, Pool
 from pathlib import Path
 
-from calendardataviz.app import _instantiate_widgets
+from calendardataviz.app import _instantiate_widgets  # type: ignore[reportPrivateUsage]
+
 from tests import DummyInspector
-from multiprocessing import Manager, Pool
 
 
 def test_layout() -> None:

@@ -1,5 +1,4 @@
 import datetime as dt
-from collections.abc import Sequence
 from multiprocessing import Queue
 from multiprocessing.pool import Pool
 from traceback import format_exception
@@ -61,10 +60,10 @@ class CalendarWidget(ttk.TTkFrame):
         self,
         inspector: InspectorABC,
         year: str,
-        queue: Queue,
+        queue: Queue[tuple[dt.date, ttk.TTkString, bool]],
         pool: Pool,
-        *args: Sequence[Any],
-        **kwargs: dict[str, Any],
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         Args:
@@ -249,11 +248,12 @@ class CalendarWidget(ttk.TTkFrame):
             popup_content = "".join(format_exception(e))
 
         # Spawn a window
-        parent: ttk.TTkAbstractScrollViewInterface = self.parentWidget()
-        # _, y_scroll_area_offset = parent.getViewOffsets()
+        y_scroll_area_offset = 0
+        if isinstance(self._parent, ttk.TTkAbstractScrollView):
+            _, y_scroll_area_offset = self._parent.getViewOffsets()
         PopupWindowWidget(
             text=popup_content,
-            distance_to_screen_bottom=parent.viewFullAreaSize()[1] - self.y() - mouse_y,
+            distance_to_screen_bottom=y_scroll_area_offset - self.y() - mouse_y,
             pos=(mouse_x, mouse_y + self.y()),
             parent=self._parent,
             title=popup_title,

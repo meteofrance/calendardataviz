@@ -1,6 +1,6 @@
-from calendardataviz import RichString
-import TermTk as ttk
 import pytest
+import TermTk as ttk
+from calendardataviz import RichString
 
 
 def test_RichString() -> None:

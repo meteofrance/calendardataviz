@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import Any, override
 
 import TermTk as ttk
@@ -7,7 +6,7 @@ import TermTk as ttk
 class LoadingSpinnerWidget(ttk.TTkFrame):
     """Loading widget, with a loading spinner"""
 
-    def __init__(self, *args: Sequence[Any], **kwargs: dict[str, Any]) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """
         Args:
             args: Arguments passed to the ttk.TTkWindow parent class.

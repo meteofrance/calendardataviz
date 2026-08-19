@@ -1,5 +1,4 @@
 import datetime as dt
-from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, override
 
@@ -14,8 +13,8 @@ class FileCountWidget(ttk.TTkFrame):
         self,
         target_nb_files: int,
         root_dir: Path,
-        *args: Sequence[Any],
-        **kwargs: dict[str, Any],
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         Args:

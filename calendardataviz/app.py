@@ -69,7 +69,7 @@ def _instantiate_widgets(
             CalendarWidget(
                 inspector=inspector,
                 year=str(year),
-                queue=manager.Queue(),
+                queue=manager.Queue(),  # type: ignore[reportArgumentType]
                 pool=pool,
                 name=f"calendar_{year}",
                 parent=scroll_area.viewport(),

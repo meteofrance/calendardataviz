@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import Any, override
 
 import TermTk as ttk
@@ -14,8 +13,8 @@ class ColorBarWidget(ttk.TTkFrame):
     def __init__(
         self,
         inspector: InspectorABC,
-        *args: Sequence[Any],
-        **kwargs: dict[str, Any],
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         Args:
@@ -55,6 +54,6 @@ class ColorBarWidget(ttk.TTkFrame):
                 )
 
     @override
-    def resizeEvent(self, w, h):
+    def resizeEvent(self, w: int, h: int) -> None:
         """Override to stop resizing."""
-        return True
+        return

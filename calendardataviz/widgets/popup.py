@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import Any, override
 
 import TermTk as ttk
@@ -11,8 +10,8 @@ class PopupWindowWidget(ttk.TTkWindow):
         self,
         text: str,
         distance_to_screen_bottom: int,
-        *args: Sequence[Any],
-        **kwargs: dict[str, Any],
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         """
         Args:
@@ -54,6 +53,6 @@ class PopupWindowWidget(ttk.TTkWindow):
         )
 
     @override
-    def resizeEvent(self, w, h):
+    def resizeEvent(self, w: int, h: int) -> None:
         """Override to stop resizing."""
-        return True
+        return
