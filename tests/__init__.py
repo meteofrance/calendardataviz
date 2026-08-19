@@ -9,11 +9,11 @@ class DummyInspector(InspectorABC):
 
     @override
     def color_for_date(self, _: dt.date) -> RichString:
-        return RichString("d" "#ff00ff", "#0000ff")
+        return RichString("d","#ff00ff", "#0000ff")
 
     @override
     def as_color_bar(self, size: int) -> list[RichString]:
-        return [RichString("c" "#ff00ff", "#0000ff")] * size
+        return [RichString("c", "#ff00ff", "#0000ff")] * size
 
     @override
     def popup_content(self, _: dt.date) -> tuple[str, str]:
