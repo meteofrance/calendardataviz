@@ -1,0 +1,186 @@
+
+[build-system]
+requires = ["setuptools==83.0.*", "wheel==0.47.*"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+calendardataviz = "calendardataviz"
+
+[project]
+name = "calendardataviz"
+version = "v0.0.0"
+requires-python = ">=3.10"
+dependencies = ["ffcount>=0.2.3", "pytermtk>=0.50.0a0"]
+
+[project.optional-dependencies]
+dev = ["ruff>=0.16.1", "pyright[nodejs]>=1.1.411", "pytest==9.1.1"]
+
+[tool.setuptools.packages.find]
+exclude = ["tests*", "doc*"]
+
+[tool.uv]
+# Enforces the use of prebuilt binary wheels over source distributions
+# that require a build step and executes arbitrary code when installing.
+pip.only-binary = [":all:"]
+
+# Cooldown period for new versions of a package.
+exclude-newer = "15 days"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+builtins = ["_"]
+include = [
+  "calendardataviz/**/*.py",
+  "demos/**/*.py",
+  "tests/**/*.py",
+]
+exclude = []
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+  "I", # I = isort
+  "F", # pyflakes
+  "W", # pycodestyle warnings
+  "E", # pycodestyle errors
+  "D", # pydocstyle
+]
+ignore = [
+  "D100", # Allow undocumented-public-module
+  "D200", # Allow unnecessayry-multiline-docstring
+  "D202", # Allow blank-line-after-function after function docstring
+  "D203", # Allow incorrect-blank-line-before-class
+  "D205", # Allow missing-blank-line-after-summary
+  "D212", # Allow multi-line-summary-first-line
+  "D213", # Allow multi-line-summary-second-line
+  "D415", # Allow missing-terminal-punctuation
+
+  # "D101",  # Allow undocumented-public-class
+  # "D102",  # Allow undocumented-public-method
+  # "D103",  # Allow undocumented-public-function
+  # "D104",  # Allow undocumented-public-package
+  "D105", # Allow undocumented-magic-method
+  # "D107",  # Allow undocumented-public-init
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+# ignore-var-parameters = true
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 88
+ignore-overlong-task-comments = true
+
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.coverage.run]
+source = ["cams/", "scripts/"]
+omit = ["cams/plots.py", "scripts/plot_sample.py"]
+fail_under = 85
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = ['def __repr__', 'if __name__ == .__main__.:']
+
+[tool.pyright]
+# https://microsoft.github.io/pyright/#/configuration?id=sample-pyprojecttoml-file
+
+## Run options
+include = ["cams", "scripts", "tests"]
+ignore = []
+
+verboseOutput = true
+
+reportMissingImports = "error"
+reportMissingTypeStubs = false
+
+pythonVersion = "3.11"
+pythonPlatform = "Linux"
+
+useLibraryCodeForTypes = true
+
+## Type hinting options
+# Disallow list[Any] and set[any], forces to fully type them.
+strictListInference = true
+strictSetInference = true
+# Allow dict[Any] as complex dict structures make typing irelevant.
+strictDictionaryInference = false
+
+# Analyse everything
+analyzeUnannotatedFunctions = true
+
+# Allow implicit optional in function parameter definition.
+# def foo(param: int = None) -> None:
+strictParameterNoneValue = false
+
+enableTypeIgnoreComments = true # Allows  # type: ignore
+
+deprecateTypingAliases = true # Deprecates the use of typing.List, Dict, ...
+
+## Type checking rules
+# When a class @property getter and setter have different types.
+reportPropertyTypeMismatch = "error"
+
+# Cyclical import chains slow down type analysis and hint at architectural layering issues.
+reportImportCycles = "error"
+
+reportUnusedImport = "error"
+
+reportDuplicateImport = "error"
+
+reportWildcardImportFromLibrary = "error"
+
+reportUntypedFunctionDecorator = "error"
+
+reportUntypedClassDecorator = "error"
+
+reportUntypedBaseClass = "error"
+
+reportUntypedNamedTuple = "error"
+
+reportPrivateUsage = "error"
+
+reportTypeCommentUsage = "error"
+
+reportPrivateImportUsage = "error"
+
+reportConstantRedefinition = "error"
+
+# reportDeprecated [boolean or string, optional]: Generate or suppress diagnostics for use of a class or function that has been marked as deprecated. The default value for this setting is "none".
+
+reportInconsistentConstructor = "error"
+
+reportUninitializedInstanceVariable = "error"
+
+# Disallow input or return parameters for functions or methods that have an unknown type
+reportUnknownParameterType = "none"
+reportUnknownArgumentType = "none"
+reportUnknownLambdaType = "none"
+reportUnknownVariableType = "none"
+reportUnknownMemberType = "none"
+
+reportMissingParameterType = "error"
+reportMissingTypeArgument = "none"
+
+reportCallInDefaultInitializer = "none"
+
+reportUnnecessaryIsInstance = "error"
+reportUnnecessaryCast = "error"
+reportUnnecessaryComparison = "error"
+reportUnnecessaryContains = "error"
+reportAssertAlwaysTrue = "error"
+reportImplicitStringConcatenation = "none"
+
+reportUnusedExpression = "error"
+
+reportUnnecessaryTypeIgnoreComment = "error"
+
+reportMatchNotExhaustive = "error"
+
+reportUnreachable = "error"
+
+reportImplicitOverride = "error"
