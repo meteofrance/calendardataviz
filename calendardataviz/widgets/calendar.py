@@ -248,12 +248,8 @@ class CalendarWidget(ttk.TTkFrame):
             popup_content = "".join(format_exception(e))
 
         # Spawn a window
-        y_scroll_area_offset = 0
-        if isinstance(self._parent, ttk.TTkAbstractScrollView):
-            _, y_scroll_area_offset = self._parent.getViewOffsets()
         PopupWindowWidget(
             text=popup_content,
-            distance_to_screen_bottom=y_scroll_area_offset - self.y() - mouse_y,
             pos=(mouse_x, mouse_y + self.y()),
             parent=self._parent,
             title=popup_title,
