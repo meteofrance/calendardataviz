@@ -40,7 +40,12 @@ def _convert_color_input(
 
     if isinstance(color, str):
         re_match: re.Match[str] | None = re.search(
-            pattern=r"#?(?P<r>[0-9a-f]{2})(?P<g>[0-9a-f]{2})(?P<b>[0-9a-f]{2})",
+            pattern=(
+                r"#?"
+                r"(?P<r>[0-9a-fA-F]{2})"
+                r"(?P<g>[0-9a-fA-F]{2})"
+                r"(?P<b>[0-9a-fA-F]{2})"
+            ),
             string=color,
         )
         if (
