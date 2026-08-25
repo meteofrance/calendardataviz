@@ -1,7 +1,15 @@
 # Calendar Data Visualisation
 Terminal interface to visualise calendar data.
 
+**Features**:
+- Displays in a calendar format, a color for each dates.
+- Allows to click on a date to reveal a popup with more informations about this date.
+- Color bar and file count widget integrated.
+- Multiprocessing computing of the calendar.
+- Requires you to implement a single class to adapt to your project.
+
 ![](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/calendar_data_vizualisation.png?raw=true)
+_Calendar implemented to show the the number of files present for each dates of the years 2024, 2025 and 2026, with a popup showing informations for the date 10/10/2025_
 
 ## Install
 This package is available on pypi. Install with your prefered package manager.
