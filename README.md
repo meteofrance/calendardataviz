@@ -156,6 +156,58 @@ if __name__ == "__main__":
     )
 ```
 
+
+### Default colors for color bar
+You can use color bars shipped with `calendardataviz`.
+For exemple, here is the implementation of the `color_for_date` function of the `InspectorABC` class for the [rainbow demo](#demos).
+
+```py
+import datetime as dt
+from typing import override
+
+from calendardataviz import InspectorABC, RichString, start_app
+from calendardataviz.colors import RAINBOW, color_from_pct
+
+
+class RainbowInspector(InspectorABC):
+    # ...
+
+    @override
+    def color_for_date(self, date: dt.date) -> RichString:
+        """Returns the color for a given date.
+
+        Args:
+            date: date.
+
+        Returns:
+            RichString: The text and color associated
+                to the given date.
+        """
+
+        # Compute the number of the day from the start of the year
+        day_nb = (date - dt.date(date.year, 1, 1)).days
+
+        # Compute the total number of days in the year
+        nb_days_in_year = (dt.date(date.year + 1, 1, 1) - dt.date(date.year, 1, 1)).days
+
+        # Compute the position of the day in the year as a percentage
+        pct = day_nb / nb_days_in_year
+
+        # Return a rich string with a background color from a color map
+        return color_from_pct(pct, RAINBOW)
+```
+
+You can see that this implementation of the `InspectorABC` uses the `calendardataviz.colors.RAINBOW` color bar and uses the `calendardataviz.colors.color_from_pct` function to sample it.
+
+
+# Demos
+## ![Rainbow calendar demo](https://github.com/meteofrance/calendardataviz/blob/main/demos/rainbow.py)
+![](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/demo_rainbow.png?raw=true)
+
+## ![Default color bars demo](https://github.com/meteofrance/calendardataviz/blob/main/demos/color_bars.py)
+![](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/demo_color_bars.png?raw=true)
+
+
 # Contribution
 Please contribute by proposing a merger request.
 
