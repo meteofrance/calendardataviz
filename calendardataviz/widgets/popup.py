@@ -23,7 +23,7 @@ class PopupWindowWidget(ttk.TTkWindow):
 
         self._text = text
         width: int = max(len(line) for line in text.split("\n")) + 3
-        height: int = len(text.split("\n")) +  4
+        height: int = len(text.split("\n")) + 4
         if "title" in kwargs:
             width = max(width, len(kwargs["title"]) + 3)
 

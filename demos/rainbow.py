@@ -8,45 +8,7 @@ import datetime as dt
 from typing import override
 
 from calendardataviz import InspectorABC, RichString, start_app
-
-
-def float_to_rgb(x: float) -> tuple[int, int, int]:
-    """Map a float in [0, 1] to a RGB color from a color bar.
-
-    Args:
-        x: Value to be mapped to rgb. Should be contained in [0, 1].
-
-    Return:
-        tuple[int, int, int]: RGB value mapped from the given float.
-    """
-    # Clamp
-    x = max(0.0, min(1.0, x))
-
-    # Defines anchor colors and their positions in the [0, 1] interval
-    anchors = [0.0, 0.25, 0.5, 0.75, 1.0]
-    colors = [
-        (0, 0, 255),  # blue
-        (0, 255, 255),  # cyan
-        (0, 255, 0),  # green
-        (255, 255, 0),  # yellow
-        (255, 0, 0),  # red
-    ]
-
-    # Find the interval that contains x
-    for i in range(len(anchors) - 1):
-        if not (anchors[i] <= x <= anchors[i + 1]):
-            continue
-        # Interpolate between the two anchor values
-        interpolation_factor = (x - anchors[i]) / (anchors[i + 1] - anchors[i])
-        r1, g1, b1 = colors[i]
-        r2, g2, b2 = colors[i + 1]
-        r = int(r1 + (r2 - r1) * interpolation_factor)
-        g = int(g1 + (g2 - g1) * interpolation_factor)
-        b = int(b1 + (b2 - b1) * interpolation_factor)
-        return (r, g, b)
-
-    # Default color (should never be reached)
-    return (255, 0, 255)
+from calendardataviz.colors import RAINBOW, color_from_pct
 
 
 class RainbowInspector(InspectorABC):
@@ -79,15 +41,10 @@ class RainbowInspector(InspectorABC):
         pct = day_nb / nb_days_in_year
 
         # Return a rich string with a background color from a color map
-        return RichString(
-            text=" ",
-            bg_color=float_to_rgb(pct),
-        )
+        return color_from_pct(pct, RAINBOW)
 
     @override
-    def as_color_bar(
-        self, size: int
-    ) -> tuple[list[RichString], list[str]]:
+    def as_color_bar(self, size: int) -> tuple[list[RichString], list[str]]:
         """Returns values for a color bar of the given size.
 
         Args:
@@ -103,18 +60,16 @@ class RainbowInspector(InspectorABC):
 
         # Define colors for the color bar, following a rainbow patterm
         color_bar = [
-            RichString(
-                text=" ",
-                bg_color=float_to_rgb(pct),
-            )
-            for pct in [i / size for i in range(size + 1)]
+            color_from_pct(pct, RAINBOW) for pct in [i / size for i in range(size + 1)]
         ]
 
         # Define labels each 5 steps of the color bar
-        labels = [
-            f"-{char.colorAt(0).getHex(0x02)}" if i % 5 == 0 else ""
-            for i, char in enumerate(color_bar)
-        ]
+        labels = []
+        for i, char in enumerate(color_bar):
+            if i % 5 == 0 or i == len(color_bar) - 1:
+                r, g, b = char.colorAt(0).bgToRGB()
+                labels.append(f"#{hex(r)[2:]}{hex(g)[2:]}{hex(b)[2:]}  ")
+            labels.append("")
 
         return color_bar, labels
 

@@ -49,7 +49,7 @@ class ColorBarWidget(ttk.TTkFrame):
         inspector_colorbar = self._inspector.as_color_bar(self.height())
         colors: list[RichString]
         labels: list[str] | None = None
-        if len(inspector_colorbar) == 1:
+        if isinstance(inspector_colorbar, list):
             colors = inspector_colorbar
         elif len(inspector_colorbar) == 2:
             colors, labels = inspector_colorbar
@@ -60,7 +60,6 @@ class ColorBarWidget(ttk.TTkFrame):
                 "list[RichString] | tuple[list[RichString], list[str]]\n"
                 f"got {inspector_colorbar}"
             )
-
 
         height = self.height() - 1
         for y, color in enumerate(colors):
