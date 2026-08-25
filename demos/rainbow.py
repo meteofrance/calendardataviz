@@ -85,7 +85,9 @@ class RainbowInspector(InspectorABC):
         )
 
     @override
-    def as_color_bar(self, size: int) -> list[RichString]:
+    def as_color_bar(
+        self, size: int
+    ) -> tuple[list[RichString], list[str]]:
         """Returns values for a color bar of the given size.
 
         Args:
@@ -93,17 +95,28 @@ class RainbowInspector(InspectorABC):
 
         Returns:
             list[RichString]: A list of length "size"
-                containing one character TTkStrings, one
+                containing one character RichStrings, one
                 for each cell of the color bar.
+            list[str]: A list of string of length "size",
+                displayed by the color bar widget as labels.
         """
 
-        return [
+        # Define colors for the color bar, following a rainbow patterm
+        color_bar = [
             RichString(
                 text=" ",
                 bg_color=float_to_rgb(pct),
             )
             for pct in [i / size for i in range(size + 1)]
         ]
+
+        # Define labels each 5 steps of the color bar
+        labels = [
+            f"-{char.colorAt(0).getHex(0x02)}" if i % 5 == 0 else ""
+            for i, char in enumerate(color_bar)
+        ]
+
+        return color_bar, labels
 
     @override
     def popup_content(self, date: dt.date) -> tuple[str, str]:

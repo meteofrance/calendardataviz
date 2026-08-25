@@ -27,7 +27,9 @@ class InspectorABC(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def as_color_bar(self, size: int) -> list[RichString]:
+    def as_color_bar(
+        self, size: int
+    ) -> list[RichString] | tuple[list[RichString], list[str]]:
         """Returns values for a color bar of the given size.
 
         Args:
@@ -37,6 +39,9 @@ class InspectorABC(ABC):
             list[RichString]: A list of length "size"
                 containing one character RichStrings, one
                 for each cell of the color bar.
+            list[str]: An optional list of string
+                of length "size", displayed by the color
+                bar widget as labels.
         """
         raise NotImplementedError
 

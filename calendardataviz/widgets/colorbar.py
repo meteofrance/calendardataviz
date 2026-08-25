@@ -3,6 +3,7 @@ from typing import Any, override
 import TermTk as ttk
 
 from calendardataviz.inspector_abc import InspectorABC
+from calendardataviz.rich_string import RichString
 
 
 class ColorBarWidget(ttk.TTkFrame):
@@ -22,6 +23,7 @@ class ColorBarWidget(ttk.TTkFrame):
             args: Arguments passed to the ttk.TTkWindow parent class.
             kwargs: Arguments passed to the ttk.TTkWindow parent class.
         """
+        self._inspector = inspector
 
         # Call parent
         size = kwargs.get("size", (10, 20))
@@ -30,8 +32,6 @@ class ColorBarWidget(ttk.TTkFrame):
         if "border" in kwargs:
             del kwargs["border"]
         super().__init__(size=size, border=False, *args, **kwargs)
-
-        self._colors = inspector.as_color_bar(self.height())
 
     @override
     def paintEvent(self, canvas: ttk.TTkCanvas):
@@ -44,10 +44,33 @@ class ColorBarWidget(ttk.TTkFrame):
 
         super().paintEvent(canvas)
 
+        # Get colors from inspector during paint event to allow
+        # the inspector to dynamicly adjust it.
+        inspector_colorbar = self._inspector.as_color_bar(self.height())
+        colors: list[RichString]
+        labels: list[str] | None = None
+        if len(inspector_colorbar) == 1:
+            colors = inspector_colorbar
+        elif len(inspector_colorbar) == 2:
+            colors, labels = inspector_colorbar
+        else:
+            raise ValueError(
+                "`InspectorABC` implementations of the `as_color_bar`"
+                "method should have return type:\n\t"
+                "list[RichString] | tuple[list[RichString], list[str]]\n"
+                f"got {inspector_colorbar}"
+            )
+
+
         height = self.height() - 1
-        for y, color in enumerate(self._colors):
+        for y, color in enumerate(colors):
             canvas.drawTTkString((0, y), color)
-            if y == 0 or y % 5 == 0 or y == height:
+            if labels:
+                canvas.drawText(
+                    pos=(1, y),
+                    text=labels[y],
+                )
+            elif y == 0 or y % 5 == 0 or y == height:
                 canvas.drawText(
                     pos=(1, y),
                     text=f"-{y / height * 100:.0f}%",
