@@ -209,6 +209,12 @@ You can see that this implementation of the `InspectorABC` uses the `calendardat
 
 
 # Demos
+To run the demos yourself, follow the [contribution guide](#contribution) instructions to install the project in development mode, then run:
+```sh
+uv run demos/rainbow.py
+uv run demos/color_bars.py
+```
+
 ## ![Rainbow calendar demo](https://github.com/meteofrance/calendardataviz/blob/main/demos/rainbow.py)
 ![](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/demo_rainbow.png?raw=true)
 
