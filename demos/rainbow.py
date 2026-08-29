@@ -74,7 +74,7 @@ class RainbowInspector(InspectorABC):
         return color_bar, labels
 
     @override
-    def popup_content(self, date: dt.date) -> tuple[str, str]:
+    def popup_content(self, date: dt.date) -> tuple[str, RichString]:
         """Return the information displayed when a date is selected.
 
         Args:
@@ -88,7 +88,12 @@ class RainbowInspector(InspectorABC):
         date_string = self.color_for_date(date)
         r, g, b = date_string.colorAt(0).bgToRGB()
         title = date.strftime(r"%A %d %B %Y")
-        content = f"#{hex(r)[2:]}{hex(g)[2:]}{hex(b)[2:]}  "
+        content = RichString(
+            text=f"#{hex(r)[2:]}{hex(g)[2:]}{hex(b)[2:]}\n",
+        ) + RichString(
+            text="\n".join([" " * 15] * 10),
+            bg_color=(r, g, b),
+        )
 
         return title, content
 

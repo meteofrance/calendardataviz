@@ -1,4 +1,5 @@
 import re
+from typing import cast, override
 
 import TermTk as ttk
 
@@ -93,5 +94,9 @@ class RichString(ttk.TTkString):
                 bg=_convert_color_input(bg_color),
             ),
         )
+
+    @override
+    def __add__(self, other : ttk.TTkStringType | ttk.TTkColor) -> RichString:
+        return cast(RichString, super().__add__(other))
 
 RichStringType = str | RichString | ttk.TTkString
