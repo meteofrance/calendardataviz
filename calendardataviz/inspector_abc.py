@@ -2,7 +2,7 @@ import datetime as dt
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from calendardataviz.rich_string import RichString
+from calendardataviz.rich_string import RichString, RichStringType
 
 
 class InspectorABC(ABC):
@@ -46,14 +46,14 @@ class InspectorABC(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def popup_content(self, date: dt.date) -> tuple[str, str]:
+    def popup_content(self, date: dt.date) -> tuple[RichStringType, RichStringType]:
         """Return the information displayed when a date is selected.
 
         Args:
             date: Date selected.
 
         Returns:
-            str: The pop-up window title.
-            str: The pop-up window content.
+            RichStringType: The pop-up window title, string or rich string.
+            RichStringType: The pop-up window content, string or rich string.
         """
         raise NotImplementedError

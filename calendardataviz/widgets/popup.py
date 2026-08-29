@@ -2,13 +2,15 @@ from typing import Any, override
 
 import TermTk as ttk
 
+from calendardataviz.rich_string import RichStringType
+
 
 class PopupWindowWidget(ttk.TTkWindow):
     """Popup window, with a scroll area."""
 
     def __init__(
         self,
-        text: str,
+        text: RichStringType,
         *args: Any,
         **kwargs: Any,
     ) -> None:

@@ -93,3 +93,5 @@ class RichString(ttk.TTkString):
                 bg=_convert_color_input(bg_color),
             ),
         )
+
+RichStringType = str | RichString | ttk.TTkString
