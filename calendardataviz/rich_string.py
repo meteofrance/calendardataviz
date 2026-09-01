@@ -96,7 +96,7 @@ class RichString(ttk.TTkString):
         )
 
     @override
-    def __add__(self, other : ttk.TTkStringType | ttk.TTkColor) -> RichString:
+    def __add__(self, other : ttk.TTkStringType | ttk.TTkColor) -> "RichString":
         return cast(RichString, super().__add__(other))
 
 RichStringType = str | RichString | ttk.TTkString
