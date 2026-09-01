@@ -11,7 +11,6 @@ class InspectorABC(ABC):
     """
 
     name: str  # Name displayed atop the calendar
-    root_dir: Path
 
     @abstractmethod
     def color_for_date(self, date: dt.date) -> RichString:
