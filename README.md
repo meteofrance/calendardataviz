@@ -2,9 +2,9 @@
 Terminal interface to visualise calendar data.
 
 **Features**:
-- Displays in a calendar format, a color for each dates.
+- Terminal User Interface that displays a calendar with different colors for each date.
 - Allows to click on a date to reveal a popup with more informations about this date.
-- Color bar and file count widget integrated.
+- Color bar and file count widget ready to use.
 - Multiprocessing computing of the calendar.
 - Requires you to implement a single class to adapt to your project.
 
@@ -21,13 +21,11 @@ uv add calendardataviz
 ```
 
 ## Usage
-In your project, create a script that implements the `InspectorABC` class
-make it return `RichString` class instances then call the `start_app`
-function. You can read our demos in available in the [demos]() folder.
-Here is a presentation of the different classes and functions:
+In your project, create a script that implements the `InspectorABC` class, then call the `start_app` function. You can read demo code in the [demos](https://github.com/meteofrance/calendardataviz/tree/main/demos) folder.
+Here is a presentation of the different classes and functions you need to know:
 
 ### `RichString`
-A class used to define a background and foreground color along side a string.
+A class used to define a background and foreground color along side a string. This string representation is expected to be returned by your implementation of the `InspectorABC` class.
 
 ```py
 class RichString(ttk.TTkString):
@@ -100,12 +98,6 @@ Here is a script template you can copy to start your own implementation
 of the `InspectorABC` class.
 
 ```python
-"""Demonstration of a rainbow calendar.
-Shows how to implement an `InspectorABC`
-class and run the Terminal User Interface
-to interact with it.
-"""
-
 import datetime as dt
 from typing import override
 
