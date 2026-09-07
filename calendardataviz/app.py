@@ -110,7 +110,7 @@ def _instantiate_widgets(
 
 
 def start_app(
-    inspector_cls: type[InspectorABC],
+    inspector: InspectorABC,
     years: Sequence[int],
     nb_processes: int = 1,
     target_nb_files: int | None = None,
@@ -140,7 +140,7 @@ def start_app(
         root = _instantiate_widgets(
             manager=manager,
             pool=pool,
-            inspector=inspector_cls(),
+            inspector=inspector,
             years=years,
             target_nb_files=target_nb_files,
             root_dir=root_dir,
