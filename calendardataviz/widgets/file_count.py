@@ -1,6 +1,6 @@
 import datetime as dt
 from pathlib import Path
-from typing import Any, override
+from typing_extensions import Any, override
 
 import TermTk as ttk
 from ffcount import ffcount

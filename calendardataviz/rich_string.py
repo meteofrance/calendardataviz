@@ -1,5 +1,5 @@
 import re
-from typing import cast, override
+from typing_extensions import cast, override
 
 import TermTk as ttk
 

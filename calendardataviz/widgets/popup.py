@@ -1,4 +1,4 @@
-from typing import Any, override
+from typing_extensions import Any, override
 
 import TermTk as ttk
 

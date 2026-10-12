@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import override
+from typing_extensions import override
 
 import TermTk as ttk
 

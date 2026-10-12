@@ -2,7 +2,7 @@ import datetime as dt
 from multiprocessing import Queue
 from multiprocessing.pool import Pool
 from traceback import format_exception
-from typing import Any, override
+from typing_extensions import Any, override
 
 import TermTk as ttk
 
