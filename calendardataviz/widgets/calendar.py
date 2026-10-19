@@ -2,9 +2,9 @@ import datetime as dt
 from multiprocessing import Queue
 from multiprocessing.pool import Pool
 from traceback import format_exception
-from typing_extensions import Any, override
 
 import TermTk as ttk
+from typing_extensions import Any, override
 
 from calendardataviz.inspector_abc import InspectorABC, RichString
 from calendardataviz.widgets.loading_spinner import LoadingSpinnerWidget
