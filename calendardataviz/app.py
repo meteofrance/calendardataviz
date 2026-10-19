@@ -122,7 +122,7 @@ def start_app(
     completion percentage (nb of files in root dir / target_nb_files).
 
     Args:
-        inspector_cls: Your project's implementatino of the
+        inspector: Your project's implementatino of the
             `calendardataviz.InspectorABC`. This is the class
             used by the app to get information for each dates.
         years: A sequence of years. A calendar will be displayed

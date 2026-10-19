@@ -1,7 +1,7 @@
 import datetime as dt
-from typing_extensions import override
 
 import TermTk as ttk
+from typing_extensions import override
 
 from calendardataviz.colors import (
     CIVIDIS,
