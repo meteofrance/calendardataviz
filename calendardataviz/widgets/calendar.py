@@ -251,7 +251,7 @@ class CalendarWidget(ttk.TTkFrame):
             if given_content == "":
                 popup_content += "No popup content provided."
         except Exception as e:
-            popup_title = "ERROR"
+            popup_title = f"ERROR for {date}"
             popup_content += "".join(format_exception(e))
 
         # Spawn a window
