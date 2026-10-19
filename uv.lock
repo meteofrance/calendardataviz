@@ -24,10 +24,10 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ffcount", specifier = ">=0.2.3" },
-    { name = "pyright", extras = ["nodejs"], marker = "extra == 'dev'", specifier = ">=1.1.411" },
+    { name = "pyright", extras = ["nodejs"], marker = "extra == 'dev'", specifier = "==1.1.411" },
     { name = "pytermtk", specifier = ">=0.50.0a0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==9.1.1" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.16.1" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = "==0.16.1" },
 ]
 provides-extras = ["dev"]
 
