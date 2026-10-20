@@ -10,6 +10,7 @@ class PopupWindowWidget(ttk.TTkWindow):
     def __init__(
         self,
         text: RichStringType,
+        title: str,
         *args: Any,
         **kwargs: Any,
     ) -> None:
@@ -18,33 +19,27 @@ class PopupWindowWidget(ttk.TTkWindow):
             text: Content of the popup's body.
             distance_to_screen_bottom: Used to compute the
                 window's allowed height.
+            title: Title of the popup window.
             args: Arguments passed to the ttk.TTkWindow parent class.
             kwargs: Arguments passed to the ttk.TTkWindow parent class.
         """
 
-        self._text = text
-        width: int = max(len(line) for line in text.split("\n")) + 3
+        width: int = max(len(line) for line in text.split("\n")) + 7
+        width = max(width, len(title) + 7)
         height: int = len(text.split("\n")) + 4
         if "title" in kwargs:
             width = max(width, len(kwargs["title"]) + 3)
 
         super().__init__(
             size=(width, height),
+            title=title,
             flags=ttk.TTkK.WindowFlag.WindowCloseButtonHint,
             *args,
             **kwargs,
         )
 
-        # Instantiate the scroll area
-        scroll_area = ttk.TTkScrollArea(
-            parent=self,
-            visible=True,
-            pos=(0, 0),
-            size=(width + 1, height - 4),
-            verticalScrollBarPolicy=ttk.TTkK.ScrollBarAlwaysOn,
-        )
         ttk.TTkLabel(
-            parent=scroll_area.viewport(),
+            parent=self,
             text=text,
         )
 
