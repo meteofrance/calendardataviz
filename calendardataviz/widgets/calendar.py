@@ -10,9 +10,9 @@ from calendardataviz.inspector_abc import InspectorABC, RichString
 from calendardataviz.widgets.loading_spinner import LoadingSpinnerWidget
 from calendardataviz.widgets.popup import PopupWindowWidget
 
-CURRENTLY_BEING_COMPUTED_COLOR = ttk.TTkString(" ", ttk.TTkColor.BG_BLUE)
-DEFAULT_DATE_COLOR = ttk.TTkString(".", ttk.TTkColor.fg("#820782"))
-ERROR_DATE_COLOR = ttk.TTkString("E", ttk.TTkColor.fg("#FF0000"))
+CURRENTLY_BEING_COMPUTED_COLOR = RichString(" ", bg_color="#000000", fg_color="#000000")
+DEFAULT_DATE_COLOR = RichString(".", fg_color="#820782")
+ERROR_DATE_COLOR = RichString("E", fg_color="#FF0000")
 
 
 def _async_compute_date(
@@ -154,7 +154,7 @@ class CalendarWidget(ttk.TTkFrame):
             self._processing_dates += missing_dates
             self._pool.imap_unordered(
                 func=_async_compute_date,
-                iterable={(self.inspector, date, self.queue) for date in missing_dates},
+                iterable={(self.inspector, date, self.queue) for date in missing_dates},  # type: ignore
             )
 
             self._spinner.start()
