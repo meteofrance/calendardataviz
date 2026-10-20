@@ -17,16 +17,20 @@ from calendardataviz.widgets.file_count import FileCountWidget
 
 
 def _instantiate_widgets(
+    root: ttk.TTk,
     manager: SyncManager,
     pool: PoolType,
     inspector: InspectorABC,
     years: Sequence[int],
     target_nb_files: int | None = None,
     root_dir: Path | None = None,
-) -> ttk.TTk:
+) -> None:
     """Instantiates and organises the app's widgets.
 
     Args:
+        root: PyTermTk root widget. Taken as parameter to allow
+            headles unit testing of the app. Widgets are instantiated
+            as its children.
         manager: Manager used to instantiate shared
             memory multiprocessing objects.
         pool: Pool of processes passed to the calendar
@@ -37,13 +41,9 @@ def _instantiate_widgets(
             file count widget.
         root_dir: If given with `target_nb_files`, will spawn a
             file count widget.
-
-    Returns:
-        ttk.TTk: Root widget.
     """
 
     # Root and scroll area
-    root = ttk.TTk(name="root", layout=ttk.TTkLayout())
     scroll_area = ttk.TTkScrollArea(
         name="scroll_area",
         parent=root,
@@ -106,8 +106,6 @@ def _instantiate_widgets(
     for calendar in calendars:
         reload_button.clicked.connect(calendar.reload)
 
-    return root
-
 
 def start_app(
     inspector: InspectorABC,
@@ -137,7 +135,9 @@ def start_app(
     """
 
     with Manager() as manager, Pool(processes=nb_processes) as pool:
-        root = _instantiate_widgets(
+        root = ttk.TTk(name="root", layout=ttk.TTkLayout())
+        _instantiate_widgets(
+            root=root,
             manager=manager,
             pool=pool,
             inspector=inspector,
