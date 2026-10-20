@@ -1,6 +1,7 @@
 """Demonstration of error display capabilities."""
 
 import datetime as dt
+
 from typing_extensions import override
 
 from calendardataviz import InspectorABC, RichString, start_app
@@ -27,15 +28,12 @@ class InspectorThatRaisesErrors(InspectorABC):
     def as_color_bar(self, size: int) -> tuple[list[RichString], list[str]]:
         """Returns values for a color bar of the given size."""
         # Define colors for the color bar, following a rainbow patterm
-        color_bar = [
-            RichString(" ") for _ in range(size + 1)
-        ]
+        color_bar = [RichString(" ") for _ in range(size + 1)]
 
         # Define labels
         labels = [""] * (size + 1)
 
         return color_bar, labels
-    
 
     @override
     def popup_content(self, date: dt.date) -> tuple[str, RichString]:
