@@ -236,16 +236,23 @@ class CalendarWidget(ttk.TTkFrame):
         if date not in self._date_color:
             self._date_color[date] = self.inspector.color_for_date(date)
 
+        # Check if color_for_date returns an exception to include it into popup
+        popup_content = ""
+        try:
+            self.inspector.color_for_date(date)
+        except Exception as e:
+            popup_content = f"{''.join(format_exception(e))}\n\n{'=' * 10}\n\n"
+
         # Get the description for the date, otherwise, format error
         try:
-            popup_title, popup_content = self.inspector.popup_content(
+            popup_title, given_content = self.inspector.popup_content(
                 date=date,
             )
-            if popup_content == "":
-                popup_content = "vide"
+            if given_content == "":
+                popup_content += "No popup content provided."
         except Exception as e:
-            popup_title = "ERROR"
-            popup_content = "".join(format_exception(e))
+            popup_title = f"ERROR for {date}"
+            popup_content += "".join(format_exception(e))
 
         # Spawn a window
         PopupWindowWidget(
