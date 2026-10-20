@@ -10,7 +10,7 @@ class PopupWindowWidget(ttk.TTkWindow):
     def __init__(
         self,
         text: RichStringType,
-        title: str,
+        title: RichStringType,
         *args: Any,
         **kwargs: Any,
     ) -> None:
