@@ -1,6 +1,5 @@
 import datetime as dt
 from abc import ABC, abstractmethod
-from pathlib import Path
 
 from calendardataviz.rich_string import RichString, RichStringType
 

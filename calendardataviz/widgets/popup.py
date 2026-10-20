@@ -1,6 +1,5 @@
-from typing_extensions import Any, override
-
 import TermTk as ttk
+from typing_extensions import Any, override
 
 from calendardataviz.rich_string import RichStringType
 
