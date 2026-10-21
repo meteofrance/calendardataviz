@@ -207,8 +207,6 @@ uv run demos/rainbow.py
 uv run demos/color_bars.py
 ```
 
-## ![Rainbow calendar demo](https://github.com/meteofrance/calendardataviz/blob/main/demos/rainbow.py)
-![](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/demo_rainbow.png?raw=true)
 
 ## ![Default color bars demo](https://github.com/meteofrance/calendardataviz/blob/main/demos/color_bars.py)
 ![](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/demo_color_bars.png?raw=true)
