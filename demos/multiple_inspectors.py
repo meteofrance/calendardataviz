@@ -19,6 +19,11 @@ class RainbowInspector(InspectorABC):
     """
 
     def __init__(self, name: str, color_bar: list[RichString]) -> None:
+        """
+        Args:
+            name: Name of the inspector.
+            color_bar: Colors used to display the rainbow.
+        """
         self.name = name
         self.color_bar = color_bar
 
@@ -63,7 +68,8 @@ class RainbowInspector(InspectorABC):
 
         # Define colors for the color bar, following a rainbow patterm
         color_bar = [
-            color_from_pct(pct, self.color_bar) for pct in [i / size for i in range(size + 1)]
+            color_from_pct(pct, self.color_bar)
+            for pct in [i / size for i in range(size + 1)]
         ]
 
         # Define labels each 5 steps of the color bar

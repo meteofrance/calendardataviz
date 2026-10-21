@@ -30,7 +30,8 @@ def _instantiate_widgets(
             memory multiprocessing objects.
         pool: Pool of processes passed to the calendar
             widgets to instantiate their own processes.
-        inspector: Inspector used by the calendars to display informations.
+        inspectors: One or more inspectors used by the
+            calendars to display informations.
         years: Years for wich a calendar is spawned.
         target_nb_files: If given with `root_dir`, will spawn a
             file count widget.

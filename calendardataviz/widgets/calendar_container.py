@@ -1,10 +1,6 @@
 from collections.abc import Sequence
-import datetime as dt
-from multiprocessing import Queue
 from multiprocessing.managers import SyncManager
-from multiprocessing.pool import Pool
 from multiprocessing.pool import Pool as PoolType
-from traceback import format_exception
 
 import TermTk as ttk
 from typing_extensions import Any, override
@@ -12,8 +8,6 @@ from typing_extensions import Any, override
 from calendardataviz.inspector_abc import InspectorABC, RichString
 from calendardataviz.widgets.calendar import CalendarWidget
 from calendardataviz.widgets.colorbar import ColorBarWidget
-from calendardataviz.widgets.loading_spinner import LoadingSpinnerWidget
-from calendardataviz.widgets.popup import PopupWindowWidget
 
 CURRENTLY_BEING_COMPUTED_COLOR = RichString(" ", bg_color="#000000", fg_color="#000000")
 DEFAULT_DATE_COLOR = RichString(".", fg_color="#820782")
@@ -28,18 +22,26 @@ class ContainerSwitcher(ttk.TTkFrame):
     def __init__(
         self,
         *,
-        parent: ttk.TTkWidget,
-        pos: tuple[int, int],
         inspectors: Sequence[InspectorABC],
         years: Sequence[int],
         manager: SyncManager,
         pool: PoolType,
         **kwargs: Any,
     ) -> None:
+        """
+        Args:
+            inspectors: One or more inspectors used by the
+                calendars to display informations.
+            years: Years for wich a calendar is spawned.
+            manager: Manager used to instantiate shared
+                memory multiprocessing objects.
+            pool: Pool of processes passed to the calendar
+                widgets to instantiate their own processes.
+            kwargs: Arguments passed to the ttk.TTkFrame init method.
+        """
+
         super().__init__(
-            parent=parent,
             title="",
-            pos=pos,
             size=(72, 9 * len(years) + 1),
             border=False,
             **kwargs,
@@ -67,7 +69,9 @@ class ContainerSwitcher(ttk.TTkFrame):
     def switch_left(self) -> None:
         """Hides the currently shown calendar and show the previous one."""
         self._containers[self._current].hide()
-        self._current = (self._current + len(self._containers) - 1) % len(self._containers)
+        self._current = (self._current + len(self._containers) - 1) % len(
+            self._containers
+        )
         self._containers[self._current].show()
 
     def reload(self) -> None:
@@ -83,16 +87,24 @@ class CalendarContainerWidget(ttk.TTkFrame):
     def __init__(
         self,
         *,
-        parent: ttk.TTkWidget,
         inspector: InspectorABC,
         years: Sequence[int],
         manager: SyncManager,
         pool: PoolType,
         **kwargs: Any,
     ) -> None:
+        """
+        Args:
+            inspector: Inspectors used by the calendars to display informations.
+            years: Years for wich a calendar is spawned.
+            manager: Manager used to instantiate shared
+                memory multiprocessing objects.
+            pool: Pool of processes passed to the calendar
+                widgets to instantiate their own processes.
+            kwargs: Arguments passed to the ttk.TTkFrame init method.
+        """
 
         super().__init__(
-            parent=parent,
             pos=(0, 0),
             size=(72, 9 * len(years) + 1),
             title="",
@@ -139,10 +151,11 @@ class CalendarContainerWidget(ttk.TTkFrame):
     def hide(self) -> None:
         """Stops calendar computations, show itself."""
         # for calendar in self.calendars:
-            # calendar.stop_computation()
-            # pass
+        # calendar.stop_computation()
+        # pass
         super().hide()
 
     def reload(self) -> None:
+        """Reloads all calendars."""
         for calendar in self.calendars:
             calendar.reload()
