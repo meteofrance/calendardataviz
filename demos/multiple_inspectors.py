@@ -9,10 +9,10 @@ import datetime as dt
 from typing_extensions import override
 
 from calendardataviz import InspectorABC, RichString, start_app
-from calendardataviz.colors import RAINBOW, TURBO, color_from_pct
+from calendardataviz.colors import color_bar_registry, color_from_pct
 
 
-class RainbowInspector(InspectorABC):
+class ColorbarInspector(InspectorABC):
     """Implementation of the InspectorABC class for
     demonstration purposses. Attributes a color to
     each date to create a rainbow pattern.
@@ -110,8 +110,8 @@ class RainbowInspector(InspectorABC):
 if __name__ == "__main__":
     start_app(
         inspector=[
-            RainbowInspector("Turbo", TURBO),
-            RainbowInspector("Rainbow", RAINBOW),
+            ColorbarInspector(name, colorbar)
+            for name, colorbar in color_bar_registry.items()
         ],
         years=[2024, 2025, 2026],
         nb_processes=1,

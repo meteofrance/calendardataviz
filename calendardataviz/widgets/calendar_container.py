@@ -5,13 +5,9 @@ from multiprocessing.pool import Pool as PoolType
 import TermTk as ttk
 from typing_extensions import Any, override
 
-from calendardataviz.inspector_abc import InspectorABC, RichString
+from calendardataviz.inspector_abc import InspectorABC
 from calendardataviz.widgets.calendar import CalendarWidget
 from calendardataviz.widgets.colorbar import ColorBarWidget
-
-CURRENTLY_BEING_COMPUTED_COLOR = RichString(" ", bg_color="#000000", fg_color="#000000")
-DEFAULT_DATE_COLOR = RichString(".", fg_color="#820782")
-ERROR_DATE_COLOR = RichString("E", fg_color="#FF0000")
 
 
 class ContainerSwitcher(ttk.TTkFrame):
@@ -65,6 +61,7 @@ class ContainerSwitcher(ttk.TTkFrame):
         self._containers[self._current].hide()
         self._current = (self._current + 1) % len(self._containers)
         self._containers[self._current].show()
+        self.update()
 
     def switch_left(self) -> None:
         """Hides the currently shown calendar and show the previous one."""
@@ -73,6 +70,7 @@ class ContainerSwitcher(ttk.TTkFrame):
             self._containers
         )
         self._containers[self._current].show()
+        self.update()
 
     def reload(self) -> None:
         """Reloads the calendar currently shown."""
@@ -113,12 +111,12 @@ class CalendarContainerWidget(ttk.TTkFrame):
         )
 
         # Color bar
-        self.color_bar = ColorBarWidget(
+        ColorBarWidget(
             name=f"{inspector.name}_color_bar",
             inspector=inspector,
             parent=self,
             size=(6, 3 * 9 - 6),
-            pos=(72, 6),
+            pos=(7, 10),
         )
 
         # Calendars

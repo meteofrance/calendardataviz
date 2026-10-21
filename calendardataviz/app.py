@@ -89,7 +89,7 @@ def _instantiate_widgets(
         name="reload_button",
         parent=scroll_area.viewport(),
         pos=(6, 0),
-        text="🔄️",
+        text="⟲",
     )
     reload_button.clicked.connect(container_switcher.reload)
 
@@ -97,13 +97,13 @@ def _instantiate_widgets(
     switch_left = ttk.TTkButton(
         name="switch_left_button",
         parent=scroll_area.viewport(),
-        pos=(10, 0),
+        pos=(9, 0),
         text="◀",
     )
     switch_right = ttk.TTkButton(
         name="switch_right_button",
         parent=scroll_area.viewport(),
-        pos=(14, 0),
+        pos=(12, 0),
         text="▶",
     )
     switch_left.clicked.connect(container_switcher.switch_left)

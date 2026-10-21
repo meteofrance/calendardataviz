@@ -756,3 +756,17 @@ RAINBOW: list[RichString] = [
     RichString(" ", "#FF0C00", "#000000"),
     RichString(" ", "#FF0000", "#000000"),
 ]
+
+
+color_bar_registry: dict[str, list[RichString]] = {
+    "CIVIDIS": CIVIDIS,
+    "COOLWARM": COOLWARM,
+    "INFERNO": INFERNO,
+    "JET": JET,
+    "MAGMA": MAGMA,
+    "PLASMA": PLASMA,
+    "RDYLGN": RDYLGN,
+    "SPECTRAL": SPECTRAL,
+    "TURBO": TURBO,
+    "VIRIDIS": VIRIDIS,
+}
