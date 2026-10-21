@@ -38,7 +38,7 @@ class ContainerSwitcher(ttk.TTkFrame):
 
         super().__init__(
             title="",
-            size=(72, 9 * len(years) + 1),
+            size=(88, 9 * len(years) + 1),
             border=False,
             **kwargs,
         )
@@ -85,6 +85,7 @@ class CalendarContainerWidget(ttk.TTkFrame):
     def __init__(
         self,
         *,
+        parent: ttk.TTkWidget,
         inspector: InspectorABC,
         years: Sequence[int],
         manager: SyncManager,
@@ -93,6 +94,7 @@ class CalendarContainerWidget(ttk.TTkFrame):
     ) -> None:
         """
         Args:
+            parent: Parent widget.
             inspector: Inspectors used by the calendars to display informations.
             years: Years for wich a calendar is spawned.
             manager: Manager used to instantiate shared
@@ -103,8 +105,9 @@ class CalendarContainerWidget(ttk.TTkFrame):
         """
 
         super().__init__(
+            parent=parent,
             pos=(0, 0),
-            size=(72, 9 * len(years) + 1),
+            size=parent.size(),
             title="",
             border=False,
             **kwargs,
@@ -115,8 +118,8 @@ class CalendarContainerWidget(ttk.TTkFrame):
             name=f"{inspector.name}_color_bar",
             inspector=inspector,
             parent=self,
-            size=(6, 3 * 9 - 6),
-            pos=(7, 10),
+            size=(8, parent.height()),
+            pos=(72, 0),
         )
 
         # Calendars
@@ -140,17 +143,14 @@ class CalendarContainerWidget(ttk.TTkFrame):
     @override
     def show(self) -> None:
         """Starts calendar computations, show itself."""
-        # for calendar in self.calendars:
-        #     calendar.reload()
+        # TODO: resume computation
 
         super().show()
 
     @override
     def hide(self) -> None:
         """Stops calendar computations, show itself."""
-        # for calendar in self.calendars:
-        # calendar.stop_computation()
-        # pass
+        # TODO: stop calendar computation
         super().hide()
 
     def reload(self) -> None:
