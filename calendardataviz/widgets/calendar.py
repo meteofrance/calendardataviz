@@ -4,7 +4,7 @@ from multiprocessing.pool import Pool
 from traceback import format_exception
 
 import TermTk as ttk
-from typing_extensions import Any, override
+from typing_extensions import Any, cast, override
 
 from calendardataviz.inspector_abc import InspectorABC, RichString
 from calendardataviz.widgets.loading_spinner import LoadingSpinnerWidget
@@ -247,11 +247,18 @@ class CalendarWidget(ttk.TTkFrame):
             popup_title = "ERROR"
             popup_content = "".join(format_exception(e))
 
+        # Get the root's scrool area
+        popup_parent = self._parent
+        while popup_parent is not None and popup_parent.name() != "scroll_area":
+            popup_parent = popup_parent.parentWidget()
+        if popup_parent is None:
+            popup_parent = cast(ttk.TTkContainer, self._parent)
+
         # Spawn a window
         PopupWindowWidget(
             text=popup_content,
             pos=(mouse_x, mouse_y + self.y()),
-            parent=self._parent,
+            parent=popup_parent,
             title=popup_title,
         )
 
