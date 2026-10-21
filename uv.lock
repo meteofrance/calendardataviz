@@ -12,6 +12,7 @@ source = { editable = "." }
 dependencies = [
     { name = "ffcount" },
     { name = "pytermtk" },
+    { name = "typing-extensions" },
 ]
 
 [package.optional-dependencies]
@@ -28,6 +29,7 @@ requires-dist = [
     { name = "pytermtk", specifier = ">=0.50.0a0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==9.1.1" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.16.1" },
+    { name = "typing-extensions", specifier = ">=4.16.0" },
 ]
 provides-extras = ["dev"]
 
