@@ -1,108 +1,116 @@
+"""Demonstration of an app that shows multiple calendars,
+one for each of the inspectors given.
+"""
+
 import datetime as dt
 
-import TermTk as ttk
 from typing_extensions import override
 
-from calendardataviz.colors import (
-    CIVIDIS,
-    COOLWARM,
-    INFERNO,
-    JET,
-    MAGMA,
-    PLASMA,
-    RDYLGN,
-    SPECTRAL,
-    TURBO,
-    VIRIDIS,
-    color_from_pct,
-)
-from calendardataviz.inspector_abc import InspectorABC
-from calendardataviz.rich_string import RichString
-from calendardataviz.widgets.colorbar import ColorBarWidget
+from calendardataviz import InspectorABC, RichString, start_app
+from calendardataviz.colors import color_bar_registry, color_from_pct
 
 
-class ColorBarInspector(InspectorABC):
-    """Inspector made to visualize a colorbar."""
+class RainbowInspector(InspectorABC):
+    """Implementation of the InspectorABC class for
+    demonstration purposses. Attributes a color to
+    each date to create a rainbow pattern.
+    """
 
-    def __init__(self, colors: list[RichString], name: str) -> None:
+    def __init__(self, name: str, color_bar: list[RichString]) -> None:
         """
         Args:
-            colors: List of colors, can be taken from``calendardataviz.colors`.
-            name: Name of the colorbar.
+            name: Name of the inspector.
+            color_bar: Colors used to display the rainbow.
         """
-        self._colors = colors
         self.name = name
+        self.color_bar = color_bar
 
     @override
     def color_for_date(self, date: dt.date) -> RichString:
-        raise NotImplementedError
+        """Returns the color for a given date.
+
+        Args:
+            date: date.
+
+        Returns:
+            RichString: The text and color associated
+                to the given date.
+        """
+
+        # Compute the number of the day from the start of the year
+        day_nb = (date - dt.date(date.year, 1, 1)).days
+
+        # Compute the total number of days in the year
+        nb_days_in_year = (dt.date(date.year + 1, 1, 1) - dt.date(date.year, 1, 1)).days
+
+        # Compute the position of the day in the year as a percentage
+        pct = day_nb / nb_days_in_year
+
+        # Return a rich string with a background color from a color map
+        return color_from_pct(pct, self.color_bar)
 
     @override
-    def popup_content(self, date: dt.date) -> tuple[str, str]:
-        raise NotImplementedError
+    def as_color_bar(self, size: int) -> tuple[list[RichString], list[str]]:
+        """Returns values for a color bar of the given size.
+
+        Args:
+            size: Size of the colorbar to generate.
+
+        Returns:
+            list[RichString]: A list of length "size"
+                containing one character RichStrings, one
+                for each cell of the color bar.
+            list[str]: A list of string of length "size",
+                displayed by the color bar widget as labels.
+        """
+
+        # Define colors for the color bar, following a rainbow patterm
+        color_bar = [
+            color_from_pct(pct, self.color_bar)
+            for pct in [i / size for i in range(size + 1)]
+        ]
+
+        # Define labels each 5 steps of the color bar
+        labels = []
+        for i, char in enumerate(color_bar):
+            if i % 5 == 0 or i == len(color_bar) - 1:
+                r, g, b = char.colorAt(0).bgToRGB()
+                labels.append(f"#{hex(r)[2:]}{hex(g)[2:]}{hex(b)[2:]}  ")
+            labels.append("")
+
+        return color_bar, labels
 
     @override
-    def as_color_bar(self, size: int) -> list[RichString]:
+    def popup_content(self, date: dt.date) -> tuple[str, RichString]:
+        """Return the information displayed when a date is selected.
 
-        colors = [color_from_pct(i / (size - 1), self._colors) for i in range(size)]
+        Args:
+            date: Date selected.
 
-        return colors
+        Returns:
+            str: The pop-up window title.
+            str: The pop-up window content.
+        """
+
+        date_string = self.color_for_date(date)
+        r, g, b = date_string.colorAt(0).bgToRGB()
+        title = date.strftime(r"%A %d %B %Y")
+        content = RichString(
+            text=f"#{hex(r)[2:]}{hex(g)[2:]}{hex(b)[2:]}\n",
+        ) + RichString(
+            text="\n".join([" " * 15] * 10),
+            bg_color=(r, g, b),
+        )
+
+        return title, content
 
 
-# Associate colors to their names
-colors = {
-    "VIRIDIS": VIRIDIS,
-    "PLASMA": PLASMA,
-    "INFERNO": INFERNO,
-    "MAGMA": MAGMA,
-    "CIVIDIS": CIVIDIS,
-    "TURBO": TURBO,
-    "COOLWARM": COOLWARM,
-    "RDYLGN": RDYLGN,
-    "SPECTRAL": SPECTRAL,
-    "JET": JET,
-}
-
-# Instantiate an inspector for each color bar
-inspectors = [ColorBarInspector(color, name) for name, color in colors.items()]
-
-# Instantiate the app's widgets
-root = ttk.TTk(name="root", layout=ttk.TTkLayout())
-scroll_area = ttk.TTkScrollArea(
-    name="scroll_area",
-    parent=root,
-    pos=(0, 0),
-    size=root.size(),
-    visible=True,
-    verticalScrollBarPolicy=ttk.TTkK.ScrollBarAlwaysOff,
-    horizontalScrollBarPolicy=ttk.TTkK.ScrollBarAsNeeded,
-)
-
-# Window title
-ttk.TTkLabel(
-    name="window_title",
-    parent=scroll_area.viewport(),
-    pos=(0, 0),
-    size=(root.width(), 1),
-    alignment=ttk.TTkConstant.Alignment.LEFT_ALIGN,
-)
-
-# Color bars
-for i, inspector in enumerate(inspectors):
-    ttk.TTkLabel(
-        text=f"{inspector.name}",
-        name=f"color_bar_{i}",
-        parent=scroll_area.viewport(),
-        pos=(i * 10 + 2, 1),
-        size=(10, 1),
-        alignment=ttk.TTkConstant.Alignment.LEFT_ALIGN,
+if __name__ == "__main__":
+    start_app(
+        inspector=[
+            RainbowInspector(name, colorbar)
+            for name, colorbar in color_bar_registry.items()
+        ],
+        years=[2024, 2025, 2026],
+        nb_processes=1,
     )
-    ColorBarWidget(
-        name="color_bar",
-        inspector=inspector,
-        parent=scroll_area.viewport(),
-        size=(10, root.height() - 4),
-        pos=(i * 10 + 4, 2),
-    )
-
-root.mainloop()
