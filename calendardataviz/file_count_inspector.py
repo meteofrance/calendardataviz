@@ -21,7 +21,7 @@ class FileCountInspector(InspectorABC):
     ) -> None:
         """
         Args:
-            names: The calendar's display name.
+            name: The calendar's display name.
             root_dir: Root directory of the inspected files.
             glob_pattern: Glob pattern used to find files in the root directory.
             nb_expected_files_per_day: How many files are expected to be found
