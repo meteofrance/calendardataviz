@@ -7,7 +7,7 @@ import datetime as dt
 from typing_extensions import override
 
 from calendardataviz import InspectorABC, RichString, start_app
-from calendardataviz.colors import color_bar_registry, color_from_pct, color_bar
+from calendardataviz.colors import color_bar, color_bar_registry, color_from_pct
 
 
 class RainbowInspector(InspectorABC):

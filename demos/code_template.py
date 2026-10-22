@@ -5,6 +5,8 @@ from calendardataviz import InspectorABC, RichString, start_app
 
 
 class YourInspector(InspectorABC):
+    """Your inspector to implement."""
+
     name = "my inspector"
 
     @override
@@ -21,7 +23,9 @@ class YourInspector(InspectorABC):
         return RichString(" ", bg_color="#9032C2")
 
     @override
-    def as_color_bar(self, size: int) -> list[RichString] | tuple[list[RichString], list[str]]:
+    def as_color_bar(
+        self, size: int
+    ) -> list[RichString] | tuple[list[RichString], list[str]]:
         """Returns values for a color bar of the given size.
 
         Args:

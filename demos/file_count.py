@@ -12,7 +12,6 @@ from pathlib import Path
 from calendardataviz import start_app
 from calendardataviz.file_count_inspector import FileCountInspector
 
-
 if __name__ == "__main__":
     start_app(
         inspector=[

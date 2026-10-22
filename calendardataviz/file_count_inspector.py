@@ -1,9 +1,8 @@
-
 import datetime as dt
 from pathlib import Path
 from typing import override
 
-from calendardataviz import InspectorABC, RichString, start_app
+from calendardataviz import InspectorABC, RichString
 from calendardataviz.colors import RDYLGN, color_bar, color_from_pct
 
 
@@ -20,6 +19,16 @@ class FileCountInspector(InspectorABC):
         nb_expected_files_per_day: int,
         colors: list[RichString] = RDYLGN,
     ) -> None:
+        """
+        Args:
+            names: The calendar's display name.
+            root_dir: Root directory of the inspected files.
+            glob_pattern: Glob pattern used to find files in the root directory.
+            nb_expected_files_per_day: How many files are expected to be found
+                for a date.
+            colors: Wich color map to use as color bar.
+        """
+
         self.name = name
         self.root_dir = root_dir
         self.glob_pattern = glob_pattern

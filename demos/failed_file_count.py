@@ -7,9 +7,10 @@ library fulfills. You will probably need to implement your own
 inspector, you should use it as a starting point.
 """
 
+import datetime as dt
 from pathlib import Path
 from typing import override
-import datetime as dt
+
 from calendardataviz import start_app
 from calendardataviz.colors import COOLWARM
 from calendardataviz.file_count_inspector import FileCountInspector
@@ -55,6 +56,7 @@ class FailCountInspector(FileCountInspector):
 
         return title, content
 
+
 if __name__ == "__main__":
     start_app(
         inspector=[
@@ -63,7 +65,7 @@ if __name__ == "__main__":
                 root_dir=Path("demos/demo_data"),
                 glob_pattern=r"**/%Y_%m_%d_*.fail",
                 nb_expected_files_per_day=4,
-                colors=COOLWARM
+                colors=COOLWARM,
             ),
             FileCountInspector(
                 name="File count demo",
