@@ -9,7 +9,8 @@ from calendardataviz import InspectorABC, RichString, start_app
 
 class InspectorThatRaisesErrors(InspectorABC):
     """Implementation of the InspectorABC class that
-    raises errors.
+    raises errors to show how they are handled by
+    the library.
     """
 
     name = "Inspector that raises errors"

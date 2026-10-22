@@ -6,7 +6,7 @@ Terminal interface to visualise calendar data.
 - Allows to click on a date to reveal a popup with more informations about this date.
 - Color bar and file count widget ready to use.
 - Multiprocessing computing of the calendar.
-- Requires you to implement a single class to adapt to your project.
+- 🚀 Requires you to implement a single class to adapt to your project.
 
 ![](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/calendar_data_vizualisation.png?raw=true)
 _Calendar implemented to show the the number of files present for each dates of the years 2024, 2025 and 2026, with a popup showing informations for the date 10/10/2025_
@@ -20,9 +20,83 @@ pip install calendardataviz
 uv add calendardataviz
 ```
 
-## Usage
-In your project, create a script that implements the `InspectorABC` class, then call the `start_app` function. You can read demo code in the [demos](https://github.com/meteofrance/calendardataviz/tree/main/demos) folder.
-Here is a presentation of the different classes and functions you need to know:
+## Startup guide
+In your project, create a script and copy in it one of the following demos.
+
+Edit the code to fit your needs, then run it to see your calendar.
+
+
+### [File count demo](https://github.com/meteofrance/calendardataviz/blob/main/demos/file_count.py)
+![Calendar showing the number of files present for each day of the year 2026](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/file_count.png?raw=true)
+
+```py
+"""Demo that shows how to display the number of files present in a
+directory that correspond to each date.
+
+The `FileCountInspector` is the only `InspectorABC` implementation
+present in `calendardataviz` because it is the principal need this
+library fulfills. You will probably need to implement your own
+inspector, you should use it as a starting point.
+"""
+
+from pathlib import Path
+
+from calendardataviz import start_app
+from calendardataviz.file_count_inspector import FileCountInspector
+
+
+if __name__ == "__main__":
+    start_app(
+        inspector=[
+            FileCountInspector(
+                name="File count demo",
+                root_dir=Path("demos/demo_data"),
+                glob_pattern=r"**/%Y_%m_%d_*",
+                nb_expected_files_per_day=4,
+            ),
+        ],
+        years=[2026],
+        nb_processes=1,
+    )
+```
+
+
+### [Customise the file count demo](https://github.com/meteofrance/calendardataviz/blob/main/demos/failed_file_count.py)
+![Calendar showing the number of files that failed for each day of the year 2026](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/failed_file_count.png?raw=true)
+
+You will probably need to customise the `FileCountInspector` to display informations about your own dataset. This demo shows how to surcharge one of its functions.
+
+It also shows that you can give multiple inspectors to the `start_app` method and you are able to switch between them in the interface using the buttons at the top of the terminal.
+
+To fully control the file count calendar, you are encouraged to reimplement it as your own by copying [its source code](https://github.com/meteofrance/calendardataviz/blob/main/calendardataviz/file_count_inspector?raw=true)
+
+
+### [Code template](https://github.com/meteofrance/calendardataviz/blob/main/demos/code_template.py)
+![Calendar with a different color for each day to form a rainbow](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/code_template.png?raw=true)
+
+Other wise, start from scratch by using the bare code template.
+
+### [Color bars demo](https://github.com/meteofrance/calendardataviz/blob/main/demos/color_bars.py)
+![Calendar with a different color for each day to form a rainbow](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/color_bars.png?raw=true)
+
+Not much use as a code template, but useful to see the color bars available in `calendardataviz.colors`.
+
+
+---
+
+
+## References
+
+Here is a presentation of the different classes and functions you need to know to implement your own inspector.
+
+
+### `InspectorABC`
+Abstract base class you need to implement. It has 3 method to override:
+- `color_for_date` wich returns the color for a given date.
+- `as_color_bar` wich returns values for a color bar of a given size.
+- `popup_content` wich returns content for the popup displayed when
+    the user clicks on a date.
+
 
 ### `RichString`
 A class used to define a background and foreground color along side a string. This string representation is expected to be returned by your implementation of the `InspectorABC` class.
@@ -51,21 +125,12 @@ class RichString(ttk.TTkString):
         """
 ```
 
-### `InspectorABC`
-Abstract base class you need to implement. It has 3 method to override:
-- `color_for_date` wich returns the color for a given date.
-- `as_color_bar` wich returns values for a color bar of a given size.
-- `popup_content` wich returns content for the popup displayed when
-    the user clicks on a date.
-
-Described in more details in the script template available bellow.
-
 ### `start_app`
 Entry point for the app, starts the Terminal User Interface.
 
 ```py
 def start_app(
-    inspector_cls: type[InspectorABC],
+    inspector: InspectorABC | Sequence[InspectorABC],
     years: Sequence[int],
     nb_processes: int = 1,
     target_nb_files: int | None = None,
@@ -77,7 +142,7 @@ def start_app(
     completion percentage (nb of files in root dir / target_nb_files).
 
     Args:
-        inspector_cls: Your project's implementatino of the
+        inspector: Your project's implementation of the
             `calendardataviz.InspectorABC`. This is the class
             used by the app to get information for each dates.
         years: A sequence of years. A calendar will be displayed
@@ -92,70 +157,6 @@ def start_app(
     """
 ```
 
-### Script template
-
-Here is a script template you can copy to start your own implementation
-of the `InspectorABC` class.
-
-```python
-import datetime as dt
-from typing import override
-
-from calendardataviz import InspectorABC, RichString, start_app
-
-
-class YourInspector(InspectorABC):
-    name = "my inspector"
-
-    @override
-    def color_for_date(self, date: dt.date) -> RichString:
-        """Returns the color for a given date.
-
-        Args:
-            date: date.
-
-        Returns:
-            RichString: The text and color associated
-                to the given date.
-        """
-        pass
-
-    @override
-    def as_color_bar(self, size: int) -> list[RichString]:
-        """Returns values for a color bar of the given size.
-
-        Args:
-            size: Size of the colorbar to generate.
-
-        Returns:
-            list[RichString]: A list of length "size"
-                containing one character TTkStrings, one
-                for each cell of the color bar.
-        """
-        pass
-
-    @override
-    def popup_content(self, date: dt.date) -> tuple[str, str]:
-        """Return the information displayed when a date is selected.
-
-        Args:
-            date: Date selected.
-
-        Returns:
-            str: The pop-up window title.
-            str: The pop-up window content.
-        """
-        pass
-
-
-if __name__ == "__main__":
-    start_app(
-        inspector_cls=YourInspector,
-        years=[2024, 2025, 2026],
-        nb_processes=1,
-    )
-```
-
 
 ### Default colors for color bar
 You can use color bars shipped with `calendardataviz`.
@@ -166,7 +167,7 @@ import datetime as dt
 from typing import override
 
 from calendardataviz import InspectorABC, RichString, start_app
-from calendardataviz.colors import RAINBOW, color_from_pct
+from calendardataviz.colors import RAINBOW, color_from_pct, color_bar
 
 
 class RainbowInspector(InspectorABC):
@@ -184,32 +185,34 @@ class RainbowInspector(InspectorABC):
                 to the given date.
         """
 
-        # Compute the number of the day from the start of the year
-        day_nb = (date - dt.date(date.year, 1, 1)).days
-
-        # Compute the total number of days in the year
-        nb_days_in_year = (dt.date(date.year + 1, 1, 1) - dt.date(date.year, 1, 1)).days
-
-        # Compute the position of the day in the year as a percentage
-        pct = day_nb / nb_days_in_year
+        # Compute a completion percentage for the given date
+        pct =  # float value between 0 and 1
 
         # Return a rich string with a background color from a color map
         return color_from_pct(pct, RAINBOW)
+
+    @override
+    def as_color_bar(self, size: int) -> tuple[list[RichString], list[str]]:
+        """Returns values for a color bar of the given size.
+
+        Args:
+            size: Size of the colorbar to generate.
+
+        Returns:
+            list[RichString]: A list of length "size"
+                containing one character RichStrings, one
+                for each cell of the color bar.
+            list[str]: A list of string of length "size",
+                displayed by the color bar widget as labels.
+        """
+
+        return color_bar(size, RAINBOW)
 ```
 
 You can see that this implementation of the `InspectorABC` uses the `calendardataviz.colors.RAINBOW` color bar and uses the `calendardataviz.colors.color_from_pct` function to sample it.
 
 
-# Demos
-To run the demos yourself, follow the [contribution guide](#contribution) instructions to install the project in development mode, then run:
-```sh
-uv run demos/rainbow.py
-uv run demos/color_bars.py
-```
-
-
-## ![Default color bars demo](https://github.com/meteofrance/calendardataviz/blob/main/demos/color_bars.py)
-![](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/demo_color_bars.png?raw=true)
+---
 
 
 # Contribution

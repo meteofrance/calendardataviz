@@ -20,6 +20,25 @@ def color_from_pct(pct: float, colors: list[RichString]) -> RichString:
     return colors[keys.index(closest_pct)]
 
 
+def color_bar(
+    size: int, colors: list[RichString]
+) -> tuple[list[RichString], list[str]]:
+    """Returns a color bar and associated ticks for the given colors."""
+
+    # Define colors for the color bar, following a rainbow patterm
+    color_bar = [
+        color_from_pct(pct, colors) for pct in [i / size for i in range(size + 1)]
+    ]
+
+    # Define labels each 5 and for the last steps of the color bar
+    labels = [
+        f"- {pct * 100:.0f}%" if j % 5 == 0 or j == len(color_bar) - 1 else ""
+        for j, pct in [(i, i / size) for i in range(size + 1)]
+    ]
+
+    return color_bar, labels
+
+
 VIRIDIS: list[RichString] = [
     RichString(" ", "#440154", "#ffffff"),
     RichString(" ", "#450659", "#ffffff"),
