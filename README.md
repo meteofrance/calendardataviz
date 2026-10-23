@@ -27,6 +27,8 @@ uv add calendardataviz
 ## Startup guide
 In your project, create a script and copy in it one of the following demos.
 
+> ⚠️ do not call your script `callendar.py`, it will cause an import conflict with the python standard librairy `calendar`.
+
 Edit the code to fit your needs, then run it to see your calendar.
 
 
