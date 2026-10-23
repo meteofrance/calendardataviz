@@ -16,11 +16,10 @@ main loop: the terminal size is fixed, terminal writes are silenced, and the
 input thread is replaced by a blocking wait that releases on quit.
 """
 
-import threading
 import warnings
 from collections.abc import Callable, Mapping
 from pathlib import Path
-from time import monotonic
+from time import monotonic, sleep
 import re
 import TermTk as ttk
 from TermTk.TTkCore.TTkTerm.term_base import TTkTermBase
@@ -93,25 +92,13 @@ class TestableTTk(ttk.TTk):
         self._seen_frames: set[str] = set()
         self._quitting = False
 
-        # Distinct frames are deduplicated by their serialized content so that
-        # the number of recorded snapshots does not depend on draw timing.
-        self._quit_event = threading.Event()
-
         self._setup_loop()
 
     def _setup_loop(self) -> None:
-        """Wire the paint signal and quit timer that drive the frame loop."""
-        # Emitted on the draw thread right after paintAll() composed the root
-        # canvas, so it is the natural place to grab a full-frame snapshot.
+        """Wire the paint signal that drives the frame loop."""
+        # Emitted right after paintAll() composed the root canvas, so it is
+        # the natural place to grab a full-frame snapshot.
         self.paintExecuted.connect(self._on_frame_painted)
-
-        # A plain timer drives the loop bookkeeping: once we have seen enough
-        # distinct frames we quit. The draw loop runs on its own thread while
-        # mainloop() blocks, so this bookkeeping must happen on a
-        # timer/deviation, not inline code in mainloop().
-        self._loop_timer = ttk.TTkTimer(name="TestableTTk (quit)")
-        self._loop_timer.timeout.connect(self._on_loop_tick)
-        self._loop_timer.start(self._POLL_INTERVAL)
 
     @staticmethod
     def _patch_terminal(terminal_size: tuple[int, int]) -> None:
@@ -172,29 +159,44 @@ class TestableTTk(ttk.TTk):
         except AttributeError:
             pass
 
-    def _run_headless_input_(self) -> None:
-        """Block in place of the real input loop until a quit is requested.
-
-        The real TTkInput.start() reads from the terminal until the app quits.
-        Here we wait on an event that is set whenever TTkHelper.quit() is
-        emitted, keeping mainloop() alive exactly like a real input loop.
-        """
-        ttk.TTkHelper.quitEvent.connect(self._quit_event.set)
-        self._quit_event.wait()
-        ttk.TTkHelper.quitEvent.disconnect(self._quit_event.set)
-
     def mainloop(self) -> None:
-        """Enter the main loop with a headless input loop.
+        """Compose frames without entering TermTk's terminal-backed loop.
 
-        The draw thread and frame snapshot logic are identical to a real
-        run; only the terminal input backend is replaced.
+        The real TTk.mainloop() starts a timer thread whose tick (_time_event)
+        waits on a paint event, resizes the root, calls TTkHelper.paintAll()
+        and emits paintExecuted — that is what our _on_frame_painted hook waits
+        on. It also tears down through TTkTerm.exit(), which configures the
+        terminal (termios.tcgetattr) and fails with ``ENOTTY`` when there is no
+        controlling terminal, as under pytest.
+
+        Instead of delegating to that loop (and to its terminal teardown), we
+        replicate just the painting half here on the calling thread: mark every
+        widget dirty with updateAll(), then call TTkHelper.paintAll() to
+        compose, and finally emit paintExecuted like the timer tick does, which
+        lets _on_frame_painted capture each distinct frame. A short sleep
+        allows any pending scheduled action to run before the next repaint is
+        requested. No terminal entry points or threads are touched, so no TTY
+        is required.
         """
-        ttk.TTkInput.start = self._run_headless_input_
         try:
-            super().mainloop()
+            self.show()
+            while not self._quitting:
+                w, h = ttk.TTkTerm.getTerminalSize()
+                with self._drawMutex:
+                    self.setGeometry(0, 0, w, h)
+                    ttk.TTkHelper.updateAll()
+                    ttk.TTkHelper.paintAll()
+                    self.paintExecuted.emit()
+                if (
+                    len(self.snapshots) < self._frames_limit
+                    and monotonic() < self._deadline
+                ):
+                    sleep(self._POLL_INTERVAL)
+                else:
+                    self._maybe_quit()
         finally:
-            # Undo the mainloop() input override and the constructor patching
-            # so the global TermTk state is clean for later tests.
+            # Undo the constructor patching so the global TermTk state is
+            # clean for later tests.
             self._restore_terminal()
 
     def _maybe_quit(self) -> None:
@@ -215,23 +217,6 @@ class TestableTTk(ttk.TTk):
                     stacklevel=2,
                 )
             ttk.TTkHelper.quit()
-
-    def _on_loop_tick(self) -> None:
-        """Force full repaints and exit once the cap or timeout is reached.
-
-        TermTk does not repaint a freshly built headless scene on its own, so
-        the first painted frames can stay blank until a widget is marked for
-        update. Re-requesting a full repaint on every tick makes sure content
-        is eventually composed even if an individual update is lost to a race
-        with the draw thread. Once the cap or timeout is reached, quit.
-        """
-        if self._quitting:
-            return
-        ttk.TTkHelper.updateAll()
-        if len(self.snapshots) < self._frames_limit and monotonic() < self._deadline:
-            self._loop_timer.start(self._POLL_INTERVAL)
-        else:
-            self._maybe_quit()
 
     def _on_frame_painted(self) -> None:
         """Snapshot the current composed frame if it is new."""

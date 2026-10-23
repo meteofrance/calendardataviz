@@ -67,10 +67,13 @@ def run_and_check_frames(
             root=root,
             manager=manager,
             pool=pool,
-            inspector=inspectors,
+            inspectors=inspectors,
             years=years,
         )
-    root.mainloop()
+        # mainloop() must run while the Manager and Pool are still alive: the
+        # widgets' paintEvent reads results from a shared queue served by the
+        # Manager process and fed by the pool workers.
+        root.mainloop()
 
     if not expected_frame_dir.exists():
         shutil.copytree(output_dir, expected_frame_dir)
