@@ -11,8 +11,7 @@ from pathlib import Path
 import TermTk as ttk
 
 from calendardataviz.inspector_abc import InspectorABC
-from calendardataviz.widgets.calendar import CalendarWidget
-from calendardataviz.widgets.colorbar import ColorBarWidget
+from calendardataviz.widgets.calendar_container import ContainerSwitcher
 from calendardataviz.widgets.file_count import FileCountWidget
 
 
@@ -20,7 +19,7 @@ def _instantiate_widgets(
     root: ttk.TTk,
     manager: SyncManager,
     pool: PoolType,
-    inspector: InspectorABC,
+    inspectors: InspectorABC | Sequence[InspectorABC],
     years: Sequence[int],
     target_nb_files: int | None = None,
     root_dir: Path | None = None,
@@ -35,7 +34,8 @@ def _instantiate_widgets(
             memory multiprocessing objects.
         pool: Pool of processes passed to the calendar
             widgets to instantiate their own processes.
-        inspector: Inspector used by the calendars to display informations.
+        inspectors: One or more inspectors used by the
+            calendars to display informations.
         years: Years for wich a calendar is spawned.
         target_nb_files: If given with `root_dir`, will spawn a
             file count widget.
@@ -53,29 +53,17 @@ def _instantiate_widgets(
         verticalScrollBarPolicy=ttk.TTkK.ScrollBarAlwaysOn,
     )
 
-    # Color bar
-    ColorBarWidget(
-        name="color_bar",
-        inspector=inspector,
+    # Container switcher wich contains multiple calendars and allows to switch
+    # between them.
+    inspectors = inspectors if isinstance(inspectors, Sequence) else [inspectors]
+    container_switcher = ContainerSwitcher(
         parent=scroll_area.viewport(),
-        size=(6, 3 * 9 - 6),
-        pos=(72, 6),
+        pos=(0, 1),
+        inspectors=inspectors,
+        years=years,
+        pool=pool,
+        manager=manager,
     )
-
-    # Calendars
-    calendars: list[CalendarWidget] = list()
-    for i, year in enumerate(years):
-        calendars.append(
-            CalendarWidget(
-                inspector=inspector,
-                year=str(year),
-                queue=manager.Queue(),  # type: ignore[reportArgumentType]
-                pool=pool,
-                name=f"calendar_{year}",
-                parent=scroll_area.viewport(),
-                pos=(0, i * 9),
-            )
-        )
 
     # Might spawn a FileCountWidget
     if target_nb_files and root_dir:
@@ -101,14 +89,29 @@ def _instantiate_widgets(
         name="reload_button",
         parent=scroll_area.viewport(),
         pos=(6, 0),
-        text="🔄️",
+        text="⟲",
     )
-    for calendar in calendars:
-        reload_button.clicked.connect(calendar.reload)
+    reload_button.clicked.connect(container_switcher.reload)
+
+    # Switch buttons
+    switch_left = ttk.TTkButton(
+        name="switch_left_button",
+        parent=scroll_area.viewport(),
+        pos=(9, 0),
+        text="◀",
+    )
+    switch_right = ttk.TTkButton(
+        name="switch_right_button",
+        parent=scroll_area.viewport(),
+        pos=(12, 0),
+        text="▶",
+    )
+    switch_left.clicked.connect(container_switcher.switch_left)
+    switch_right.clicked.connect(container_switcher.switch_right)
 
 
 def start_app(
-    inspector: InspectorABC,
+    inspector: InspectorABC | Sequence[InspectorABC],
     years: Sequence[int],
     nb_processes: int = 1,
     target_nb_files: int | None = None,
@@ -140,7 +143,7 @@ def start_app(
             root=root,
             manager=manager,
             pool=pool,
-            inspector=inspector,
+            inspectors=inspector,
             years=years,
             target_nb_files=target_nb_files,
             root_dir=root_dir,
