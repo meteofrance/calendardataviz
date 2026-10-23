@@ -1,5 +1,9 @@
 """Demonstration of an app that shows multiple calendars,
 one for each of the inspectors given.
+
+Also shows the ability to switch between multiple inspectors
+passed to the start app methode, using the "◀" and "▶" buttons
+at the top of the interface.
 """
 
 import datetime as dt
@@ -7,7 +11,7 @@ import datetime as dt
 from typing_extensions import override
 
 from calendardataviz import InspectorABC, RichString, start_app
-from calendardataviz.colors import color_bar_registry, color_from_pct
+from calendardataviz.colors import color_bar, color_bar_registry, color_from_pct
 
 
 class RainbowInspector(InspectorABC):
@@ -23,7 +27,7 @@ class RainbowInspector(InspectorABC):
             color_bar: Colors used to display the rainbow.
         """
         self.name = name
-        self.color_bar = color_bar
+        self.colors = color_bar
 
     @override
     def color_for_date(self, date: dt.date) -> RichString:
@@ -47,7 +51,7 @@ class RainbowInspector(InspectorABC):
         pct = day_nb / nb_days_in_year
 
         # Return a rich string with a background color from a color map
-        return color_from_pct(pct, self.color_bar)
+        return color_from_pct(pct, self.colors)
 
     @override
     def as_color_bar(self, size: int) -> tuple[list[RichString], list[str]]:
@@ -64,21 +68,7 @@ class RainbowInspector(InspectorABC):
                 displayed by the color bar widget as labels.
         """
 
-        # Define colors for the color bar, following a rainbow patterm
-        color_bar = [
-            color_from_pct(pct, self.color_bar)
-            for pct in [i / size for i in range(size + 1)]
-        ]
-
-        # Define labels each 5 steps of the color bar
-        labels = []
-        for i, char in enumerate(color_bar):
-            if i % 5 == 0 or i == len(color_bar) - 1:
-                r, g, b = char.colorAt(0).bgToRGB()
-                labels.append(f"#{hex(r)[2:]}{hex(g)[2:]}{hex(b)[2:]}  ")
-            labels.append("")
-
-        return color_bar, labels
+        return color_bar(size, self.colors)
 
     @override
     def popup_content(self, date: dt.date) -> tuple[str, RichString]:

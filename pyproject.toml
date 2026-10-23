@@ -46,7 +46,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["ruff==0.16.1", "pyright[nodejs]==1.1.411", "pytest==9.1.1"]
+dev = [
+  "ruff==0.16.1",
+  "pyright[nodejs]==1.1.411",
+  "pytest==9.1.1",
+]
 
 [project.urls]
 Homepage = "https://github.com/meteofrance/calendardataviz"
