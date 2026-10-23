@@ -72,7 +72,7 @@ To fully control the file count calendar, you are encouraged to reimplement it a
 
 
 ### [Code template](https://github.com/meteofrance/calendardataviz/blob/main/demos/code_template.py)
-![Calendar with a different color for each day to form a rainbow](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/code_template.png?raw=true)
+![Calendar that shows only purple](https://github.com/meteofrance/calendardataviz/blob/main/doc/images/code_template.png?raw=true)
 
 Other wise, start from scratch by using the bare code template.
 

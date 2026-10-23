@@ -1,5 +1,9 @@
 """Demonstration of an app that shows multiple calendars,
 one for each of the inspectors given.
+
+Also shows the ability to switch between multiple inspectors
+passed to the start app methode, using the "◀" and "▶" buttons
+at the top of the interface.
 """
 
 import datetime as dt

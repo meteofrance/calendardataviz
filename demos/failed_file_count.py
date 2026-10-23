@@ -35,7 +35,7 @@ class FailCountInspector(FileCountInspector):
 
         file_paths = sorted(self._files_for_date(date))
 
-        # Define popup content wich will look like
+        # Define popup content wich will look like this:
         # file_path1.fail
         # Reason the file path failed
         #
@@ -62,14 +62,14 @@ if __name__ == "__main__":
         inspector=[
             FailCountInspector(
                 name="Failed file count demo",
-                root_dir=Path("demos/demo_data"),
+                root_dir=Path(__file__) / "demo_data",
                 glob_pattern=r"**/%Y_%m_%d_*.fail",
                 nb_expected_files_per_day=4,
                 colors=COOLWARM,
             ),
             FileCountInspector(
                 name="File count demo",
-                root_dir=Path("demos/demo_data"),
+                root_dir=Path(__file__) / "demo_data",
                 glob_pattern=r"**/%Y_%m_%d_*",
                 nb_expected_files_per_day=4,
             ),

@@ -2,7 +2,7 @@ import datetime as dt
 from typing import override
 
 from calendardataviz import InspectorABC, RichString, start_app
-
+from calendardataviz.colors import color_bar, color_from_pct, RDYLGN
 
 class YourInspector(InspectorABC):
     """Your inspector to implement."""
@@ -20,7 +20,9 @@ class YourInspector(InspectorABC):
             RichString: The text and color associated
                 to the given date.
         """
-        return RichString(" ", bg_color="#9032C2")
+    
+        # return RichString(" ", bg_color="#9032C2")
+        return color_from_pct(date.day / 31, RDYLGN)
 
     @override
     def as_color_bar(
@@ -36,7 +38,9 @@ class YourInspector(InspectorABC):
                 containing one character TTkStrings, one
                 for each cell of the color bar.
         """
-        return [RichString(" ", bg_color="#9032C2")] * size, ["-"] * size
+
+        # return [RichString(" ", bg_color="#9032C2")] * size, ["-"] * size
+        return color_bar(size, RDYLGN)
 
     @override
     def popup_content(self, date: dt.date) -> tuple[str, str]:
@@ -49,7 +53,8 @@ class YourInspector(InspectorABC):
             str: The pop-up window title.
             str: The pop-up window content.
         """
-        return "Popup Title", "Popup Content"
+
+        return f"Popup Title {date}", "Popup Content"
 
 
 if __name__ == "__main__":

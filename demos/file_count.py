@@ -17,9 +17,9 @@ if __name__ == "__main__":
         inspector=[
             FileCountInspector(
                 name="File count demo",
-                root_dir=Path("demos/demo_data"),
+                root_dir=Path(__file__) / "demo_data",
                 glob_pattern=r"**/%Y_%m_%d_*",
-                nb_expected_files_per_day=4,
+                nb_expected_files_per_day=4,  # Used as denominator to compute date percentage/color
             ),
         ],
         years=[2026],
