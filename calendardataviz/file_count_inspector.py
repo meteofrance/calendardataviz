@@ -1,3 +1,12 @@
+"""Inspector that displays the number of files present in a
+directory that correspond to each date.
+
+The `FileCountInspector` is the only `InspectorABC` implementation
+present in `calendardataviz` because it is the principal need this
+library fulfills. You will probably need to implement your own
+inspector, you should use it as a starting point.
+"""
+
 import datetime as dt
 from pathlib import Path
 from typing import override
@@ -23,9 +32,13 @@ class FileCountInspector(InspectorABC):
         Args:
             name: The calendar's display name.
             root_dir: Root directory of the inspected files.
-            glob_pattern: Glob pattern used to find files in the root directory.
+            glob_pattern: `datetime.date.strftime` pattern used as a glob
+                pattern to find files in the root directory.
+                Example: "**/%Y_%m_%d_*.txt", will match in any sub
+                directories files with name like "year_month_day_*.txt"
             nb_expected_files_per_day: How many files are expected to be found
-                for a date.
+                for a date, used as denominator in date completion percentage
+                and color computation.
             colors: Wich color map to use as color bar.
         """
 

@@ -32,6 +32,7 @@ class InspectorABC(ABC):
         Often implemented in one line with:
         ```py
         from calendardataviz.colors import color_bar, RAINBOW
+
         return color_bar(size, RAINBOW)
         ```
 

@@ -2,7 +2,8 @@ import datetime as dt
 from typing import override
 
 from calendardataviz import InspectorABC, RichString, start_app
-from calendardataviz.colors import color_bar, color_from_pct, RDYLGN
+from calendardataviz.colors import RDYLGN, color_bar, color_from_pct
+
 
 class YourInspector(InspectorABC):
     """Your inspector to implement."""
@@ -20,7 +21,7 @@ class YourInspector(InspectorABC):
             RichString: The text and color associated
                 to the given date.
         """
-    
+
         # return RichString(" ", bg_color="#9032C2")
         return color_from_pct(date.day / 31, RDYLGN)
 

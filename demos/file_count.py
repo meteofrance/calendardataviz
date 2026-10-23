@@ -18,8 +18,11 @@ if __name__ == "__main__":
             FileCountInspector(
                 name="File count demo",
                 root_dir=Path(__file__) / "demo_data",
+                # `datetime.date.strftime` pattern used as a glob
+                # pattern to find files in the root directory.
                 glob_pattern=r"**/%Y_%m_%d_*",
-                nb_expected_files_per_day=4,  # Used as denominator to compute date percentage/color
+                # Used as denominator to compute date percentage/color
+                nb_expected_files_per_day=4,
             ),
         ],
         years=[2026],
