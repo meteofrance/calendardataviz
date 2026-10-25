@@ -132,7 +132,22 @@ class CalendarWidget(ttk.TTkFrame):
             borders=False,
         )
 
+        # Computing
+        self._computing = False
+        self._dates_to_compute: list[dt.date] = []
         self._trigger_missing_dates_computing()
+
+    def start_computing(self) -> None:
+        """Starts computing if the calendar has anything to compute."""
+        if len(self._dates_to_compute) == 0 and len(self._processing_dates) == 0:
+            return
+        self._computing = True
+        self._spinner.start()
+
+    def stop_computing(self) -> None:
+        """Strops computing."""
+        self._computing = False
+        self._spinner.stop()
 
     def reload(self) -> None:
         """Reloads percentages for every dates."""
@@ -140,6 +155,7 @@ class CalendarWidget(ttk.TTkFrame):
             date: DEFAULT_DATE_COLOR for date in self._position_dates.values()
         }
         self._trigger_missing_dates_computing()
+        self.start_computing()
 
     def _trigger_missing_dates_computing(self) -> None:
         """Triggers multiprocessing jobs to compute missing dates."""
@@ -149,20 +165,38 @@ class CalendarWidget(ttk.TTkFrame):
             for date in self._date_positions
             if self._date_color[date] == DEFAULT_DATE_COLOR
         ]
-
-        if len(missing_dates) != 0:
-            self._processing_dates += missing_dates
-            self._pool.imap_unordered(
-                func=_async_compute_date,
-                iterable={(self.inspector, date, self.queue) for date in missing_dates},  # type: ignore
-            )
-
-            self._spinner.start()
+        for date in missing_dates:
+            if date in self._dates_to_compute:
+                continue
+            self._dates_to_compute.append(date)
 
     def _timer_update(self) -> None:
         """Method triggered by the calendar's update timer."""
         self.update(repaint=True)
         self._timer.start(1)
+
+    def _update_computation(self) -> None:
+        # Update state by pulling the async queue
+        while not self.queue.empty():
+            date, ttk_string, done = self.queue.get()
+            self._date_color[date] = ttk_string
+
+            if done:
+                self._processing_dates.remove(date)
+
+        if len(self._processing_dates) == 0 and len(self._dates_to_compute) == 0:
+            self.stop_computing()
+
+        # Add dates to computation if currently computing
+        nb_dates = min(30, len(self._dates_to_compute))
+        dates_to_add = self._dates_to_compute[:nb_dates]
+        if self._computing and dates_to_add:
+            self._dates_to_compute = self._dates_to_compute[nb_dates:]
+            self._processing_dates += dates_to_add
+            self._pool.imap_unordered(
+                func=_async_compute_date,
+                iterable=[(self.inspector, date, self.queue) for date in dates_to_add],  # type: ignore
+            )
 
     @override
     def paintEvent(self, canvas: ttk.TTkCanvas) -> None:
@@ -172,17 +206,7 @@ class CalendarWidget(ttk.TTkFrame):
         Args:
             canvas: The canvas object used to draw the widget.
         """
-
-        # Update values
-        while not self.queue.empty():
-            date, ttk_string, done = self.queue.get()
-            self._date_color[date] = ttk_string
-
-            if done:
-                self._processing_dates.remove(date)
-
-        if len(self._processing_dates) == 0:
-            self._spinner.stop()
+        self._update_computation()
 
         super().paintEvent(canvas)
 

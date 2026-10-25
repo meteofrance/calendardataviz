@@ -143,14 +143,15 @@ class CalendarContainerWidget(ttk.TTkFrame):
     @override
     def show(self) -> None:
         """Starts calendar computations, show itself."""
-        # TODO: resume computation
-
+        for calendar in self.calendars:
+            calendar.start_computing()
         super().show()
 
     @override
     def hide(self) -> None:
         """Stops calendar computations, show itself."""
-        # TODO: stop calendar computation
+        for calendar in self.calendars:
+            calendar.stop_computing()
         super().hide()
 
     def reload(self) -> None:
