@@ -49,7 +49,6 @@ class LoadingSpinnerWidget(ttk.TTkFrame):
             canvas.drawChar((0, 0), self._states[self._current_state])
         else:
             canvas.drawChar((0, 0), "•")
-        
 
     def start(self) -> None:
         """Starts or restarts the loading spinner animation."""
