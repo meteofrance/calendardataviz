@@ -29,6 +29,12 @@ class InspectorABC(ABC):
         self, size: int
     ) -> list[RichString] | tuple[list[RichString], list[str]]:
         """Returns values for a color bar of the given size.
+        Often implemented in one line with:
+        ```py
+        from calendardataviz.colors import color_bar, RAINBOW
+
+        return color_bar(size, RAINBOW)
+        ```
 
         Args:
             size: Size of the colorbar to generate.
