@@ -138,12 +138,14 @@ class CalendarWidget(ttk.TTkFrame):
         self._trigger_missing_dates_computing()
 
     def start_computing(self) -> None:
+        """Starts computing if the calendar has anything to compute."""
         if len(self._dates_to_compute) == 0 and len(self._processing_dates) == 0:
             return
         self._computing = True
         self._spinner.start()
 
     def stop_computing(self) -> None:
+        """Strops computing."""
         self._computing = False
         self._spinner.stop()
 
