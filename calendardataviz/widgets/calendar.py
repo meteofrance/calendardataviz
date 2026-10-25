@@ -134,7 +134,7 @@ class CalendarWidget(ttk.TTkFrame):
 
         # Computing
         self._computing = False
-        self._dates_to_compute: set[dt.date] = set()
+        self._dates_to_compute: list[dt.date] = []
         self._trigger_missing_dates_computing()
 
     def start_computing(self) -> None:
@@ -163,7 +163,10 @@ class CalendarWidget(ttk.TTkFrame):
             for date in self._date_positions
             if self._date_color[date] == DEFAULT_DATE_COLOR
         ]
-        self._dates_to_compute.update(missing_dates)
+        for date in missing_dates:
+            if date in self._dates_to_compute:
+                continue
+            self._dates_to_compute.append(date)
 
     def _timer_update(self) -> None:
         """Method triggered by the calendar's update timer."""
@@ -171,18 +174,6 @@ class CalendarWidget(ttk.TTkFrame):
         self._timer.start(1)
 
     def _update_computation(self) -> None:
-        # Add dates to computation if currently computing
-        dates_to_add = []
-        while self._computing and len(self._processing_dates) < 10 and len(self._dates_to_compute) > 0:
-            date = self._dates_to_compute.pop()
-            self._processing_dates.append(date)
-            dates_to_add.append(date)
-        if dates_to_add:
-            self._pool.imap_unordered(
-                func=_async_compute_date,
-                iterable=[(self.inspector, date, self.queue) for date in dates_to_add],  # type: ignore
-            )
-        
         # Update state by pulling the async queue
         while not self.queue.empty():
             date, ttk_string, done = self.queue.get()
@@ -193,6 +184,17 @@ class CalendarWidget(ttk.TTkFrame):
 
         if len(self._processing_dates) == 0 and len(self._dates_to_compute) == 0:
             self.stop_computing()
+
+        # Add dates to computation if currently computing
+        nb_dates = min(30, len(self._dates_to_compute))
+        dates_to_add = self._dates_to_compute[:nb_dates]
+        if self._computing and dates_to_add:
+            self._dates_to_compute = self._dates_to_compute[nb_dates:]
+            self._processing_dates += dates_to_add
+            self._pool.imap_unordered(
+                func=_async_compute_date,
+                iterable=[(self.inspector, date, self.queue) for date in dates_to_add],  # type: ignore
+            )
 
     @override
     def paintEvent(self, canvas: ttk.TTkCanvas) -> None:
