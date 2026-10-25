@@ -128,7 +128,6 @@ def _instantiate_widgets(
     switch_left.clicked.connect(container_switcher.switch_left)
     switch_right.clicked.connect(container_switcher.switch_right)
 
-
     # Set default focus
     sigint_frame.setFocusPolicy(ttk.TTkConstant.StrongFocus)
     sigint_frame.setFocus()
