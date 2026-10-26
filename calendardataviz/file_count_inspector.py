@@ -9,7 +9,8 @@ inspector, you should use it as a starting point.
 
 import datetime as dt
 from pathlib import Path
-from typing import override
+
+from typing_extensions import override
 
 from calendardataviz import InspectorABC, RichString
 from calendardataviz.colors import RDYLGN, color_bar, color_from_pct
