@@ -9,6 +9,7 @@ inspector, you should use it as a starting point.
 
 import datetime as dt
 from pathlib import Path
+
 from typing_extensions import override
 
 from calendardataviz import start_app

@@ -1,4 +1,5 @@
 import datetime as dt
+
 from typing_extensions import override
 
 from calendardataviz import InspectorABC, RichString, start_app
