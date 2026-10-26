@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import override
+from typing_extensions import override
 
 from calendardataviz import InspectorABC, RichString, start_app
 from calendardataviz.colors import RDYLGN, color_bar, color_from_pct
