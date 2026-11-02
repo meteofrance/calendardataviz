@@ -1,8 +1,9 @@
+import datetime as dt
 from collections.abc import Callable
+from traceback import format_exception
+
 import TermTk as ttk
 from typing_extensions import Any, override
-import datetime as dt
-from traceback import format_exception
 
 from calendardataviz.rich_string import RichStringType
 
@@ -25,6 +26,8 @@ class PopupWindowWidget(ttk.TTkWindow):
             distance_to_screen_bottom: Used to compute the
                 window's allowed height.
             title: Title of the popup window.
+            origin_fnc: Function used to define the popup's title and content.
+            date: Date the popup was spawned for.
             args: Arguments passed to the ttk.TTkWindow parent class.
             kwargs: Arguments passed to the ttk.TTkWindow parent class.
         """
