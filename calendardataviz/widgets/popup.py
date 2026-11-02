@@ -1,5 +1,8 @@
+from collections.abc import Callable
 import TermTk as ttk
 from typing_extensions import Any, override
+import datetime as dt
+from traceback import format_exception
 
 from calendardataviz.rich_string import RichStringType
 
@@ -11,6 +14,8 @@ class PopupWindowWidget(ttk.TTkWindow):
         self,
         text: RichStringType,
         title: RichStringType,
+        origin_fnc: Callable[[dt.date], tuple[RichStringType, RichStringType]],
+        date: dt.date,
         *args: Any,
         **kwargs: Any,
     ) -> None:
@@ -23,6 +28,9 @@ class PopupWindowWidget(ttk.TTkWindow):
             args: Arguments passed to the ttk.TTkWindow parent class.
             kwargs: Arguments passed to the ttk.TTkWindow parent class.
         """
+
+        self._origin_fnc = origin_fnc
+        self._date = date
 
         width: int = max(len(line) for line in text.split("\n")) + 7
         width = max(width, len(title) + 7)
@@ -38,10 +46,27 @@ class PopupWindowWidget(ttk.TTkWindow):
             **kwargs,
         )
 
-        ttk.TTkLabel(
+        self._content = ttk.TTkLabel(
             parent=self,
             text=text,
         )
+
+    def reload(self) -> None:
+        """Called after the popup parent calendar's reload method is called."""
+
+        # Get the description for the date, otherwise, format error
+        content = "reloaded\n"
+        try:
+            title, given_content = self._origin_fnc(self._date)
+            if given_content == "":
+                content += "No popup content provided."
+            else:
+                content += given_content
+        except Exception as e:
+            title = f"ERROR for {self._date}"
+            content += "".join(format_exception(e))
+        self.setTitle(title)
+        self._content.setText(content)
 
     @override
     def resizeEvent(self, w: int, h: int) -> None:
