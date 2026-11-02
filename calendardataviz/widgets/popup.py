@@ -1,7 +1,6 @@
 import TermTk as ttk
 from typing_extensions import Any, override
-from collections.abc import Callable
-import datetime as dt
+
 from calendardataviz.rich_string import RichStringType
 
 
@@ -39,7 +38,7 @@ class PopupWindowWidget(ttk.TTkWindow):
             **kwargs,
         )
 
-        self._content = ttk.TTkLabel(
+        ttk.TTkLabel(
             parent=self,
             text=text,
         )
@@ -48,8 +47,3 @@ class PopupWindowWidget(ttk.TTkWindow):
     def resizeEvent(self, w: int, h: int) -> None:
         """Override to stop resizing."""
         return
-
-    @override
-    def close(self) -> None:
-
-        return super().close()
