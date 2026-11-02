@@ -55,7 +55,7 @@ class PopupWindowWidget(ttk.TTkWindow):
         """Called after the popup parent calendar's reload method is called."""
 
         # Get the description for the date, otherwise, format error
-        content = "reloaded\n"
+        content = f"Reloaded {dt.datetime.now().strftime('%H:%M:%S')}\n\n"
         try:
             title, given_content = self._origin_fnc(self._date)
             if given_content == "":
