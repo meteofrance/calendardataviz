@@ -8,9 +8,23 @@ from multiprocessing.managers import SyncManager
 from multiprocessing.pool import Pool as PoolType
 
 import TermTk as ttk
+from typing_extensions import override
 
 from calendardataviz.inspector_abc import InspectorABC
 from calendardataviz.widgets.calendar_container import ContainerSwitcher
+
+
+class SigIntFrameWidget(ttk.TTkFrame):
+    """Frame that catches ctrl+c input and closes the app.
+    Necessary, sigint catching on windows is not implemented in ttk.
+    """
+
+    @override
+    def keyEvent(self, evt: ttk.TTkKeyEvent) -> bool:
+        if evt.key == ttk.TTkK.Key_C and evt.mod == ttk.TTkK.ControlModifier:
+            ttk.TTkHelper.quit()
+            return True
+        return super().keyEvent(evt)
 
 
 def _instantiate_widgets(
@@ -36,11 +50,16 @@ def _instantiate_widgets(
 
     # Root and scroll area
     root = ttk.TTk(name="root", layout=ttk.TTkLayout())
+    sigint_frame = SigIntFrameWidget(
+        parent=root,
+        size=root.size(),
+        pos=(0, 0),
+    )
     scroll_area = ttk.TTkScrollArea(
         name="scroll_area",
-        parent=root,
+        parent=sigint_frame,
         pos=(0, 0),
-        size=root.size(),
+        size=sigint_frame.size(),
         visible=True,
         verticalScrollBarPolicy=ttk.TTkK.ScrollBarAlwaysOn,
     )
@@ -90,6 +109,10 @@ def _instantiate_widgets(
     )
     switch_left.clicked.connect(container_switcher.switch_left)
     switch_right.clicked.connect(container_switcher.switch_right)
+
+    # Set default focus
+    sigint_frame.setFocusPolicy(ttk.TTkConstant.StrongFocus)
+    sigint_frame.setFocus()
 
     return root
 
