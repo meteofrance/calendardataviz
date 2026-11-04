@@ -6,13 +6,11 @@ from collections.abc import Sequence
 from multiprocessing import Manager, Pool
 from multiprocessing.managers import SyncManager
 from multiprocessing.pool import Pool as PoolType
-from pathlib import Path
 
 import TermTk as ttk
 
 from calendardataviz.inspector_abc import InspectorABC
 from calendardataviz.widgets.calendar_container import ContainerSwitcher
-from calendardataviz.widgets.file_count import FileCountWidget
 
 
 def _instantiate_widgets(
@@ -20,8 +18,6 @@ def _instantiate_widgets(
     pool: PoolType,
     inspectors: InspectorABC | Sequence[InspectorABC],
     years: Sequence[int],
-    target_nb_files: int | None = None,
-    root_dir: Path | None = None,
 ) -> ttk.TTk:
     """Instantiates and organises the app's widgets.
 
@@ -33,10 +29,6 @@ def _instantiate_widgets(
         inspectors: One or more inspectors used by the
             calendars to display informations.
         years: Years for wich a calendar is spawned.
-        target_nb_files: If given with `root_dir`, will spawn a
-            file count widget.
-        root_dir: If given with `target_nb_files`, will spawn a
-            file count widget.
 
     Returns:
         ttk.TTk: Root widget.
@@ -64,16 +56,6 @@ def _instantiate_widgets(
         pool=pool,
         manager=manager,
     )
-
-    # Might spawn a FileCountWidget
-    if target_nb_files and root_dir:
-        FileCountWidget(
-            name="file_count",
-            parent=scroll_area.viewport(),
-            pos=(71, 0),
-            target_nb_files=target_nb_files,
-            root_dir=root_dir,
-        )
 
     # Quit button
     quit_button = ttk.TTkButton(
@@ -116,8 +98,6 @@ def start_app(
     inspector: InspectorABC | Sequence[InspectorABC],
     years: Sequence[int],
     nb_processes: int = 1,
-    target_nb_files: int | None = None,
-    root_dir: Path | None = None,
 ) -> None:
     """Library entry point, instantiates and starts the terminal interface.
     If target_nb_files and root_dir are given, also spawns a file count
@@ -133,10 +113,6 @@ def start_app(
         nb_processes: Number of multiprocessing processes to use.
             If your inspector's `color_for_date` method is not
             instantaneous, helps speed up the calendar's initialisation.
-        target_nb_files: If given with `root_dir`, will spawn a
-            file count widget.
-        root_dir: If given with `target_nb_files`, will spawn a
-            file count widget.
     """
 
     with Manager() as manager, Pool(processes=nb_processes) as pool:
@@ -145,8 +121,6 @@ def start_app(
             pool=pool,
             inspectors=inspector,
             years=years,
-            target_nb_files=target_nb_files,
-            root_dir=root_dir,
         )
 
         root.mainloop()

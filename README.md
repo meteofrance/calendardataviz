@@ -5,9 +5,8 @@ Terminal interface to visualise calendar data.
 - 📆 Terminal calendar view that colors each day according to your data.
 - 🔍 Click any date to reveal a popup with its details.
 - Multiple calendars in a single app.
-- Ready-to-use color bar and file count widgets.
-- 🌈 Color maps to get you started, plus a built-in `FileCountInspector` you can
-  reuse or subclass for your own dataset.
+- 🌈 Ready to use color maps and `FileCountInspector` to quick start your own
+    calendar implementation.
 - ⚡ Multiprocessing computing to speed up calendar initialisation on large datasets.
 - 🐛 Easy to debug, stack traces are shown in the UI instead of failing silently.
 - 🚀 Adapt it to your data by implementing a single [`InspectorABC`](https://github.com/meteofrance/calendardataviz/blob/main/calendardataviz/inspector_abc.py) class.
