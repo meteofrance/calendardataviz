@@ -28,11 +28,11 @@ class LoadingSpinnerWidget(ttk.TTkFrame):
         self._timer = ttk.TTkTimer()
         self._timer.timeout.connect(self._timer_update)
         self._timer.start(self._delays[self._current_state])
+        self._alive = True
 
     def _timer_update(self) -> None:
-        self._current_state += 1
-        if self._current_state == len(self._states):
-            self._current_state = 0
+        self._alive = True
+        self._current_state = (self._current_state + 1) % len(self._states)
         self._timer.start(self._delays[self._current_state])
         self.update()
 
@@ -45,10 +45,10 @@ class LoadingSpinnerWidget(ttk.TTkFrame):
             canvas: The canvas object used to draw the widget.
         """
 
-        char = self._states[self._current_state]
-        if not self._timer.is_alive():
-            char = "•"
-        canvas.drawChar((0, 0), char)
+        if self._alive:
+            canvas.drawChar((0, 0), self._states[self._current_state])
+        else:
+            canvas.drawChar((0, 0), "•")
 
     def start(self) -> None:
         """Starts or restarts the loading spinner animation."""
@@ -57,3 +57,4 @@ class LoadingSpinnerWidget(ttk.TTkFrame):
     def stop(self) -> None:
         """Stops the loading spinner animation."""
         self._timer.stop()
+        self._alive = False
