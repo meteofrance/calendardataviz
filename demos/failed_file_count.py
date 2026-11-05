@@ -63,14 +63,14 @@ if __name__ == "__main__":
         inspector=[
             FailCountInspector(
                 name="Failed file count demo",
-                root_dir=Path(__file__) / "demo_data",
+                root_dir=Path(__file__).parent / "demo_data",
                 glob_pattern=r"**/%Y_%m_%d_*.fail",
                 nb_expected_files_per_day=4,
                 colors=COOLWARM,
             ),
             FileCountInspector(
                 name="File count demo",
-                root_dir=Path(__file__) / "demo_data",
+                root_dir=Path(__file__).parent / "demo_data",
                 glob_pattern=r"**/%Y_%m_%d_*",
                 nb_expected_files_per_day=4,
             ),

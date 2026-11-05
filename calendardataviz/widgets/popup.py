@@ -1,3 +1,7 @@
+import datetime as dt
+from collections.abc import Callable
+from traceback import format_exception
+
 import TermTk as ttk
 from typing_extensions import Any, override
 
@@ -11,6 +15,8 @@ class PopupWindowWidget(ttk.TTkWindow):
         self,
         text: RichStringType,
         title: RichStringType,
+        origin_fnc: Callable[[dt.date], tuple[RichStringType, RichStringType]],
+        date: dt.date,
         *args: Any,
         **kwargs: Any,
     ) -> None:
@@ -20,9 +26,14 @@ class PopupWindowWidget(ttk.TTkWindow):
             distance_to_screen_bottom: Used to compute the
                 window's allowed height.
             title: Title of the popup window.
+            origin_fnc: Function used to define the popup's title and content.
+            date: Date the popup was spawned for.
             args: Arguments passed to the ttk.TTkWindow parent class.
             kwargs: Arguments passed to the ttk.TTkWindow parent class.
         """
+
+        self._origin_fnc = origin_fnc
+        self._date = date
 
         width: int = max(len(line) for line in text.split("\n")) + 7
         width = max(width, len(title) + 7)
@@ -38,10 +49,27 @@ class PopupWindowWidget(ttk.TTkWindow):
             **kwargs,
         )
 
-        ttk.TTkLabel(
+        self._content = ttk.TTkLabel(
             parent=self,
             text=text,
         )
+
+    def reload(self) -> None:
+        """Called after the popup parent calendar's reload method is called."""
+
+        # Get the description for the date, otherwise, format error
+        content = f"Reloaded {dt.datetime.now().strftime('%H:%M:%S')}\n\n"
+        try:
+            title, given_content = self._origin_fnc(self._date)
+            if given_content == "":
+                content += "No popup content provided."
+            else:
+                content += given_content
+        except Exception as e:
+            title = f"ERROR for {self._date}"
+            content += "".join(format_exception(e))
+        self.setTitle(title)
+        self._content.setText(content)
 
     @override
     def resizeEvent(self, w: int, h: int) -> None:

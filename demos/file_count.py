@@ -17,7 +17,7 @@ if __name__ == "__main__":
         inspector=[
             FileCountInspector(
                 name="File count demo",
-                root_dir=Path(__file__) / "demo_data",
+                root_dir=Path(__file__).parent / "demo_data",
                 # `datetime.date.strftime` pattern used as a glob
                 # pattern to find files in the root directory.
                 glob_pattern=r"**/%Y_%m_%d_*",

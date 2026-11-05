@@ -98,6 +98,9 @@ class CalendarWidget(ttk.TTkFrame):
         self._processing_dates: list[dt.date] = []
         self._nb_dates_in_processing_batch: int = 0
 
+        # Signals
+        self.reloaded = ttk.pyTTkSignal()
+
         # Associates a date to an onscreen position
         days_offset = int(self._start_date.strftime(r"%u")) - 1
         self._date_positions: dict[dt.date, tuple[int, int]] = {
@@ -140,6 +143,7 @@ class CalendarWidget(ttk.TTkFrame):
             date: DEFAULT_DATE_COLOR for date in self._position_dates.values()
         }
         self._trigger_missing_dates_computing()
+        self.reloaded.emit()
 
     def _trigger_missing_dates_computing(self) -> None:
         """Triggers multiprocessing jobs to compute missing dates."""
@@ -264,11 +268,16 @@ class CalendarWidget(ttk.TTkFrame):
             popup_parent = cast(ttk.TTkContainer, self._parent)
 
         # Spawn a window
-        PopupWindowWidget(
+        popup = PopupWindowWidget(
             text=popup_content,
             pos=(mouse_x, mouse_y + self.y()),
             parent=popup_parent,
             title=popup_title,
+            origin_fnc=self.inspector.popup_content,
+            date=date,
         )
+
+        # Connect signals
+        self.reloaded.connect(popup.reload)
 
         return True
