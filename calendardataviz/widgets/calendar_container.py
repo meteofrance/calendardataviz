@@ -36,6 +36,9 @@ class ContainerSwitcher(ttk.TTkFrame):
             kwargs: Arguments passed to the ttk.TTkFrame init method.
         """
 
+        self._multiprocessing_manager = manager
+        self._multiprocessin_pool = pool
+
         super().__init__(
             title="",
             size=(88, 9 * len(years) + 1),
@@ -75,6 +78,13 @@ class ContainerSwitcher(ttk.TTkFrame):
     def reload(self) -> None:
         """Reloads the calendar currently shown."""
         self._containers[self._current].reload()
+
+    @override
+    def close(self):
+        self._multiprocessing_manager.shutdown()
+        self._multiprocessin_pool.close()
+        self._multiprocessin_pool.terminate()
+        super().close()
 
 
 class CalendarContainerWidget(ttk.TTkFrame):
