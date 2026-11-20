@@ -106,7 +106,14 @@ class FileCountInspector(InspectorABC):
         """
 
         file_paths = sorted(self._files_for_date(date))
-        content = "\n".join(path.name for path in file_paths)
+
+        # Popup content
+        if len(file_paths) > 0:
+            content = "\n".join(path.name for path in file_paths)
+        else:
+            content = "No files found for this date."
+
+        # Popup title
         title = (
             f"{date.strftime(r'%Y/%m/%d')} "
             f"({len(file_paths)}/{self.nb_expected_files_per_day})"
